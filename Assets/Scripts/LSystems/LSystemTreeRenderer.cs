@@ -69,9 +69,9 @@ public class LSystemTreeRenderer : MonoBehaviour
 
         points.Add(pos);
 
-        foreach (char c in commands)
+        foreach (char command in commands)
         {
-            switch (c)
+            switch (command)
             {
                 case 'F':
                     pos += rot * Vector3.forward * step;

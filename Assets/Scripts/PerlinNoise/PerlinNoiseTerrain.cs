@@ -25,6 +25,8 @@ public class PerlinNoiseTerrain : MonoBehaviour
     [ContextMenu("Generate")]
     public void Generate()
     {
+        _terrainData = terrain.terrainData;
+        _resolution = _terrainData.heightmapResolution;
         terrainObject.SetActive(true);
         if (seedInput.text != "")
         {
