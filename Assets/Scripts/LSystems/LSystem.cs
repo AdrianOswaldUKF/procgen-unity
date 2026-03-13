@@ -1,40 +1,43 @@
 using System.Collections.Generic;
 using System.Text;
 
-public class LSystem
+namespace LSystems
 {
-    private readonly Dictionary<char, string> _rules;
-
-    public LSystem(string[] rules)
+    public class LSystem
     {
-        _rules = new Dictionary<char, string>();
+        private readonly Dictionary<char, string> _rules;
 
-        foreach (string rule in rules)
+        public LSystem(string[] rules)
         {
-            string[] parts = rule.Split('=');
-            if (parts.Length == 2)
+            _rules = new Dictionary<char, string>();
+
+            foreach (string rule in rules)
             {
-                _rules[parts[0][0]] = parts[1];
+                string[] parts = rule.Split('=');
+                if (parts.Length == 2)
+                {
+                    _rules[parts[0][0]] = parts[1];
+                }
             }
         }
-    }
 
-    public string Expand(string axiom, int iterations)
-    {
-        StringBuilder current = new StringBuilder(axiom);
-
-        for (int i = 0; i < iterations; i++)
+        public string Expand(string axiom, int iterations)
         {
-            StringBuilder next = new StringBuilder();
+            StringBuilder current = new StringBuilder(axiom);
 
-            foreach (char c in current.ToString())
+            for (int i = 0; i < iterations; i++)
             {
-                next.Append(_rules.TryGetValue(c, out string r) ? r : c);
+                StringBuilder next = new StringBuilder();
+
+                foreach (char c in current.ToString())
+                {
+                    next.Append(_rules.TryGetValue(c, out string r) ? r : c);
+                }
+
+                current = next;
             }
 
-            current = next;
+            return current.ToString();
         }
-
-        return current.ToString();
     }
 }

@@ -32,7 +32,7 @@ public class Telemetry : MonoBehaviour
         }
         else
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
             return;
         }
 

@@ -1,12 +1,16 @@
 using UnityEngine;
 
-public struct LSystemState
+namespace LSystems
 {
-    public Vector3 pos; 
-    public Quaternion rot;
-
-    public LSystemState(Vector3 p, Quaternion r)
+    public struct LSystemState
     {
-        pos = p; rot = r;
-    } 
+        public Vector3 pos;
+        public Quaternion rot;
+
+        public LSystemState(Vector3 p, Quaternion r)
+        {
+            pos = p;
+            rot = r;
+        }
+    }
 }
