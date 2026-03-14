@@ -16,32 +16,40 @@ namespace LSystems
         public float extrudeRadius = 0.05f;
         public float segmentsPerUnit = 4f;
 
+        [ContextMenu("Clear Tree")]
+        public void ClearTree()
+        {
+            Transform old = transform.Find("Tree_Generated");
+            if (old != null)
+                DestroyImmediate(old.gameObject);
+        }
+
         public void Render(string commands)
         {
             if (string.IsNullOrEmpty(commands))
-            {
                 return;
-            }
 
-            Transform old = transform.Find("Tree_Generated");
-            if (old != null)
-            {
-                DestroyImmediate(old.gameObject);
-            }
-
+            ClearTree();
+            
             GameObject tree = new GameObject("Tree_Generated");
             tree.transform.SetParent(transform, false);
+            tree.layer = gameObject.layer;
+            
+            GameObject splineHolder = new GameObject("Splines");
+            splineHolder.transform.SetParent(tree.transform, false);
+            splineHolder.layer = tree.layer;
 
-            SplineContainer container = tree.AddComponent<SplineContainer>();
-            SplineExtrude extrude = tree.AddComponent<SplineExtrude>();
+            SplineContainer container = splineHolder.AddComponent<SplineContainer>();
+            SplineExtrude extrude = splineHolder.AddComponent<SplineExtrude>();
+
             extrude.Container = container;
             extrude.targetMesh = extrudeMesh;
             extrude.Radius = extrudeRadius;
             extrude.SegmentsPerUnit = segmentsPerUnit;
-            if (extrudeMaterial != null)
-            {
-                extrude.GetComponent<Renderer>().sharedMaterial = extrudeMaterial;
-            }
+            
+            Renderer rend = splineHolder.GetComponent<Renderer>();
+            if (extrudeMaterial != null && rend != null)
+                rend.sharedMaterial = extrudeMaterial;
 
             Stack<LSystemState> stack = new Stack<LSystemState>();
             List<Vector3> points = new List<Vector3>();
@@ -102,7 +110,6 @@ namespace LSystems
                             rot = s.rot;
                             points.Add(pos);
                         }
-
                         break;
                 }
             }

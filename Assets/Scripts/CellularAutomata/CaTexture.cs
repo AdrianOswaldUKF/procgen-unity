@@ -1,55 +1,48 @@
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace CellularAutomata
 {
-    public class CaTexture : MonoBehaviour
+    public class CaTexture : CaGenerator
     {
-        [Header("Grid")] 
-        public int width = 100;
-        public int height = 100;
-        public string seed;
-
-        [Header("Cellular Automata")] [Range(0f, 1f)]
-        public float fillProbability = 0.65f;
-
-        public int iterations = 5;
-        public int birthThreshold = 5;
-
-        [Header("Display")] 
+        [Header("Texture")]
         public Renderer targetRenderer;
         public Color aliveColor = Color.black;
         public Color deadColor = Color.white;
 
-        private bool[,] _grid;
-        private bool[,] _buffer;
+        [Header("CA Settings")]
+        public float fillProbability = 0.65f;
+        public int iterations = 5;
+        public int birthThreshold = 5;
+
         private Texture2D _texture;
 
-        [ContextMenu("Generate")]
-        public void Generate()
+        protected override float DefaultFillProbability => fillProbability;
+        protected override int DefaultIterations => iterations;
+        protected override int DefaultBirthThreshold => birthThreshold;
+        protected override string TelemetryName => "CaTexture";
+
+        protected override void ReadUIInputs()
         {
-            Telemetry.Instance?.RecordGenerationStart("CellularAutomataTexture");
-            Initialize();
-            GenerateGrid();
-            ApplyIterations();
-            UpdateTexture();
-            Telemetry.Instance?.RecordGenerationEnd("CellularAutomataTexture");
+            base.ReadUIInputs();
+            if (Application.isPlaying)
+            {
+                fillProbability = fillProbabilitySlider?.value ?? fillProbability;
+                
+                if (iterationsInput != null && iterationsInput.text != "") 
+                    iterations = int.Parse(iterationsInput.text);
+                
+                if (birthThresholdInput != null && birthThresholdInput.text != "") 
+                    birthThreshold = int.Parse(birthThresholdInput.text);
+            }
         }
 
-        void Start()
+        protected override void InitializeGrid()
         {
-            Generate();
-        }
-
-        private void Initialize()
-        {
-            _grid = new bool[width, height];
-            _buffer = new bool[width, height];
-
+            base.InitializeGrid();
             _texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
             _texture.filterMode = FilterMode.Point;
             _texture.wrapMode = TextureWrapMode.Clamp;
-
+            
             if (targetRenderer != null)
             {
                 Material mat = new Material(targetRenderer.sharedMaterial);
@@ -58,73 +51,12 @@ namespace CellularAutomata
             }
         }
 
-        private void GenerateGrid()
+        protected override void PlacePrefabs() { }
+
+        protected override void ApplyIterations()
         {
-            if (!string.IsNullOrEmpty(seed))
-            {
-                Random.InitState(seed.GetHashCode());
-            }
-
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    _grid[x, y] = Random.value < fillProbability;
-                }
-            }
-        }
-
-        private void ApplyIterations()
-        {
-            for (int i = 0; i < iterations; i++)
-            {
-                Step();
-            }
-        }
-
-        private void Step()
-        {
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    int neighbors = CountNeighbors(x, y);
-                    _buffer[x, y] = neighbors >= birthThreshold;
-                }
-            }
-
-            (_grid, _buffer) = (_buffer, _grid);
-        }
-
-        private int CountNeighbors(int cx, int cy)
-        {
-            int count = 0;
-
-            for (int ox = -1; ox <= 1; ox++)
-            {
-                for (int oy = -1; oy <= 1; oy++)
-                {
-                    if (ox == 0 && oy == 0)
-                    {
-                        continue;
-                    }
-
-                    int nx = cx + ox;
-                    int ny = cy + oy;
-
-                    if (nx < 0 || ny < 0 || nx >= width || ny >= height)
-                    {
-                        continue;
-                    }
-
-                    if (_grid[nx, ny])
-                    {
-                        count++;
-                    }
-                }
-            }
-
-            return count;
+            base.ApplyIterations();
+            UpdateTexture();
         }
 
         private void UpdateTexture()
@@ -133,11 +65,18 @@ namespace CellularAutomata
             {
                 for (int y = 0; y < height; y++)
                 {
-                    _texture.SetPixel(x, y, _grid[x, y] ? aliveColor : deadColor);
+                    _texture.SetPixel(x, y, grid[x, y] ? aliveColor : deadColor);
                 }
             }
-
             _texture.Apply();
+        }
+
+        protected override void SetupUI()
+        {
+            seedInput.text = seed;
+            fillProbabilitySlider.value = fillProbability;
+            iterationsInput.text = iterations.ToString();
+            birthThresholdInput.text = birthThreshold.ToString();
         }
     }
 }

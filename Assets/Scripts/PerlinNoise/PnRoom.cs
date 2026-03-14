@@ -1,55 +1,25 @@
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace PerlinNoise
 {
-    public class PnRoom : MonoBehaviour
+    public class PnRoom : PnGenerator
     {
-        [Header("Grid Size")] 
-        public int width = 32;
-        public int height = 32;
-
-        [Header("Perlin Noise")] 
-        public int scale = 8;
-        public float roomThreshold = 0.2f;
-        public float wallThreshold = 0.8f;
-        public float offsetX;
-        public float offsetY;
-
         [Header("Room Size")] 
         public float cellSize = 4f;
+        public float wallHeight = 2.5f;
 
         [Header("Prefabs")] 
         public GameObject floorPrefab;
         public GameObject wallPrefab;
-        public Transform parent;
 
-        [ContextMenu("Generate")]
-        public void Generate()
-        {
-            offsetX = Random.Range(0, 99999);
-            offsetY = Random.Range(0, 99999);
-            ClearParent();
-            GenerateRooms();
-        }
+        protected override string TelemetryName => "PerlinNoiseRoom";
 
-        [ContextMenu("ClearParent")]
-        public void ClearContext()
-        {
-            ClearParent();
-        }
-
-        void Start()
-        {
-            Telemetry.Instance?.RecordGenerationStart("PerlinNoiseRoom");
-            Generate();
-            Telemetry.Instance?.RecordGenerationEnd("PerlinNoiseRoom");
-        }
-
-        void GenerateRooms()
+        protected override void GenerateGrid()
         {
             float originX = -width * cellSize / 2f;
             float originZ = -height * cellSize / 2f;
+            float roomThreshold = 0.2f;
+            float wallThreshold = 0.8f;
 
             for (int x = 0; x < width; x++)
             {
@@ -64,37 +34,19 @@ namespace PerlinNoise
                     bool isRoom = roomNoise < roomThreshold;
                     bool isWall = wallNoise > wallThreshold;
 
-                    GameObject prefab = (!isWall && isRoom) ? floorPrefab : wallPrefab;
+                    GameObject prefab = !isWall && isRoom ? floorPrefab : wallPrefab;
                     Vector3 pos = new Vector3(originX + x * cellSize, 0, originZ + y * cellSize);
 
                     GameObject obj = Instantiate(prefab, pos, Quaternion.identity, parent);
 
                     if (prefab == floorPrefab)
-                    {
                         obj.transform.localScale = new Vector3(cellSize, 0.2f, cellSize);
-                        obj.transform.position = new Vector3(pos.x, 0, pos.z);
-                    }
                     else
                     {
-                        float wallHeight = 2.5f;
                         obj.transform.localScale = new Vector3(cellSize, wallHeight, cellSize);
-                        obj.transform.position = new Vector3(pos.x, wallHeight * 0.5f, pos.z);
+                        obj.transform.position += Vector3.up * wallHeight * 0.5f;
                     }
                 }
-            }
-        }
-
-
-        void ClearParent()
-        {
-            if (parent == null) return;
-            while (parent.childCount > 0)
-            {
-                Transform child = parent.GetChild(0);
-                if (Application.isPlaying)
-                    Destroy(child.gameObject);
-                else
-                    DestroyImmediate(child.gameObject);
             }
         }
     }

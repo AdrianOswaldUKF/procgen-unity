@@ -15,9 +15,7 @@ namespace LSystems
             {
                 string[] parts = rule.Split('=');
                 if (parts.Length == 2)
-                {
                     _rules[parts[0][0]] = parts[1];
-                }
             }
         }
 

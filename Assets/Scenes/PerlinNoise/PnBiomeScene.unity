@@ -288,12 +288,12 @@ MonoBehaviour:
   width: 64
   height: 64
   scale: 8
-  offsetX: 34772
-  offsetY: 16420
+  offsetX: 92829
+  offsetY: 59987
+  parent: {fileID: 308923421}
   grassPrefab: {fileID: 3434798962816979122, guid: 710b8074b8936b4468584f066fe551f0, type: 3}
   rockPrefab: {fileID: 6241418528925602819, guid: 46ac5ccd6ce97fc49a50f554264dc945, type: 3}
   waterPrefab: {fileID: 6525271012435302873, guid: 9196436ff1db7dc43bbf7eb9cdb5f4d4, type: 3}
-  parent: {fileID: 308923421}
 --- !u!4 &308923421
 Transform:
   m_ObjectHideFlags: 0
@@ -303,7 +303,7 @@ Transform:
   m_GameObject: {fileID: 308923419}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -91.30582, y: -0.00003, z: 33.00583}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

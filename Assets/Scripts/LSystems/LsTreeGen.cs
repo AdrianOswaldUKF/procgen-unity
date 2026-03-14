@@ -1,5 +1,6 @@
 using System.Linq;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 
 namespace LSystems
@@ -18,19 +19,13 @@ namespace LSystems
         public void Generate()
         {
             if (axiomInput.text != "")
-            {
                 axiom = axiomInput.text;
-            }
 
             if (iterationsInput.text != "")
-            {
                 iterations = int.Parse(iterationsInput.text);
-            }
 
             if (rulesInput.text != "")
-            {
                 rules = rulesInput.text.Split(',');
-            }
 
             Telemetry.Instance?.RecordGenerationStart("LSystemTree");
             LSystem expander = new LSystem(rules);
@@ -38,24 +33,30 @@ namespace LSystems
 
             GetComponent<LsTreeRender>().Render(result);
             Telemetry.Instance?.RecordGenerationEnd("LSystemTree");
+            ResetCylinderMesh();
         }
 
         void Start()
         {
             axiomInput.text = axiom;
             iterationsInput.text = iterations.ToString();
+            
             foreach (string str in rules)
             {
                 rulesInput.text += str;
                 if (str == rules.Last())
-                {
                     return;
-                }
 
                 rulesInput.text += ",";
             }
 
             Generate();
+        }
+        
+        void ResetCylinderMesh()
+        {
+            EditorUtility.SetDirty(gameObject);
+            Resources.UnloadUnusedAssets();
         }
     }
 }
