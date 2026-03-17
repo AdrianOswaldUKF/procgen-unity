@@ -41,8 +41,8 @@ namespace PerlinNoise
                     }
                     else
                     {
-                        obj.transform.localScale = new Vector3(cellSize, wallHeight, cellSize);
-                        obj.transform.position += Vector3.up * wallHeight * 0.5f;
+                        obj.transform.localScale = new Vector3(cellSize, wallHeight * heightMultiplier, cellSize);
+                        obj.transform.position += Vector3.up * wallHeight * heightMultiplier * 0.5f;
                     }
                 }
             }

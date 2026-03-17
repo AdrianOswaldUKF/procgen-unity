@@ -31,13 +31,28 @@ namespace LSystems
         public void Generate()
         {
             ReadUIInputs();
-            Telemetry.Instance?.RecordGenerationStart(TelemetryName);
+            Telemetry.Instance?.StartPCG(TelemetryName);
             
             LSystem lsystem = new LSystem(rules);
             string result = lsystem.Expand(axiom, iterations);
+            LogLSystemMetrics(result);
             RenderLSystem(result);
 
-            Telemetry.Instance?.RecordGenerationEnd(TelemetryName);
+            Telemetry.Instance?.EndPCG();
+        }
+        
+        protected void LogLSystemMetrics(string commands)
+        {
+            int stringLength = commands.Length;
+            int segmentCount = 0;
+            foreach (char cmd in commands)
+            {
+                if (cmd == 'F' || cmd == 'R') segmentCount++;
+            }
+    
+            Telemetry.Instance.LogLSystem(
+                stringLength, segmentCount, rules.Length, iterations
+            );
         }
         
         [ContextMenu("Clear Parent")]

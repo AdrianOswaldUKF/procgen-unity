@@ -1483,12 +1483,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29be9133595f04b45958dc2f9cf0b436, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Telemetry
-  fpsUpdateInterval: 0.5
-  CurrentFps: 0
-  IsGenerating: 0
-  CurrentElapsedMs: 0
-  fpsText: {fileID: 551682286}
-  genTimeText: {fileID: 628257816}
+  statsText: {fileID: 0}
+  fileName: PCG_Telemetry
+  pcgResults: []
 --- !u!4 &822977021
 Transform:
   m_ObjectHideFlags: 0
@@ -1972,14 +1969,18 @@ MonoBehaviour:
   width: 128
   height: 128
   scale: 2
-  threshold: 0.45
-  offsetX: 30139
-  offsetY: 99765
+  offsetX: 44549
+  offsetY: 70164
+  heightMultiplier: 1
+  seed: 
+  seedInput: {fileID: 773251594}
+  scaleInput: {fileID: 1978286631}
+  heightMultiplierInput: {fileID: 834486092}
+  parent: {fileID: 913468810}
   cellSize: 2
   wallHeight: 5
   floorPrefab: {fileID: 3202298322380306934, guid: 5f71582cf92efea44ac9f1fdac00a6e9, type: 3}
   wallPrefab: {fileID: 6521612999012265250, guid: af8260c24f2c6e4419f41567a8a11969, type: 3}
-  parent: {fileID: 913468810}
 --- !u!1 &990669483
 GameObject:
   m_ObjectHideFlags: 0
@@ -2547,8 +2548,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PerlinNoiseTerrain, Assembly-CSharp
+      - m_Target: {fileID: 913468811}
+        m_TargetAssemblyTypeName: PerlinNoise.PnCave, Assembly-CSharp
         m_MethodName: Generate
         m_Mode: 1
         m_Arguments:
@@ -3006,7 +3007,7 @@ Transform:
   m_GameObject: {fileID: 1373293650}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 2000, z: 0}
+  m_LocalPosition: {x: 0, y: 450, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

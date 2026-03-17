@@ -43,12 +43,12 @@ public class WFC3DGenerator : MonoBehaviour
 
     private void Generate()
     {
-        Telemetry.Instance?.RecordGenerationStart("WFC3DGeneration");
+        Telemetry.Instance?.StartPCG("WFC3DGeneration");
 
         if (modules == null || modules.Length == 0)
         {
             Debug.LogError("[WFC3D] modules not assigned.");
-            Telemetry.Instance?.RecordGenerationEnd("WFC3DGeneration");
+            Telemetry.Instance?.EndPCG();
             return;
         }
 
@@ -74,7 +74,31 @@ public class WFC3DGenerator : MonoBehaviour
         {
             Debug.LogError("[WFC3D] generation failed after maxRestarts=" + maxRestarts);
         }
-        Telemetry.Instance?.RecordGenerationEnd("WFC3DGeneration");
+        Telemetry.Instance?.EndPCG();
+    }
+    
+    private void LogWFCMetrics(int attempts, int propagationSteps, HashSet<int>[,,] possible)
+    {
+        float avgEntropy = 0f;
+        int totalCells = width * depth * height;
+        int cellCount = 0;
+    
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < depth; y++)
+            {
+                for (int z = 0; z < height; z++)
+                {
+                    avgEntropy += possible[x, y, z].Count;
+                    cellCount++;
+                }
+            }
+        }
+    
+        avgEntropy = cellCount > 0 ? avgEntropy / cellCount : 0f;
+        float moduleVariety = modules.Length > 0 ? cellCount / (float)(modules.Length * totalCells) : 0f;
+    
+        Telemetry.Instance.LogWFC(attempts, propagationSteps, avgEntropy, moduleVariety);
     }
 
     void Start()
@@ -308,7 +332,8 @@ public class WFC3DGenerator : MonoBehaviour
                     result[x, y, z] = FirstOf(possible[x, y, z]);
             }
         }
-
+        
+        LogWFCMetrics(1, propagationSteps: propagationQueue.Count, possible);
         return true; 
     }
 

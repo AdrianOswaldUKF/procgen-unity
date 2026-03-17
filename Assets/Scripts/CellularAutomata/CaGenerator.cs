@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -34,25 +35,30 @@ namespace CellularAutomata
         public void Generate()
         {
             ReadUIInputs();
-            Telemetry.Instance?.RecordGenerationStart(TelemetryName);
+            Telemetry.Instance?.StartPCG(TelemetryName);
 
             InitializeGrid();
             GenerateGrid();
             ApplyIterations();
+            
+            Telemetry.Instance.LogCA(
+                deadEnds: CountDeadEnds(grid),
+                regions: CountRegions(grid), 
+                fillPct: CalculateFillPct(grid),
+                iterations: DefaultIterations
+            );
+            
             ClearPrefabs();
             PlacePrefabs();
-
-            Telemetry.Instance?.RecordGenerationEnd(TelemetryName);
+            Telemetry.Instance?.EndPCG();
         }
 
         protected virtual void ReadUIInputs()
         {
             if (Application.isPlaying)
             {
-                if (seedInput != null && seedInput.text != "")
-                {
+                if (!string.IsNullOrEmpty(seedInput.text))
                     seed = seedInput.text;
-                }
             }
         }
 
@@ -140,6 +146,78 @@ namespace CellularAutomata
                 else
                     DestroyImmediate(child.gameObject);
             }
+        }
+        
+        protected int CountDeadEnds(bool[,] grid)
+        {
+            int deadEnds = 0;
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    if (!grid[x, y]) continue;
+                    int neighbors = CountNeighbors(x, y);
+                    if (neighbors <= 1) deadEnds++;
+                }
+            }
+            return deadEnds;
+        }
+
+        protected int CountRegions(bool[,] grid)
+        {
+            bool[,] visited = new bool[width, height];
+            int regions = 0;
+    
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    if (grid[x, y] && !visited[x, y])
+                    {
+                        FloodFill(grid, visited, x, y);
+                        regions++;
+                    }
+                }
+            }
+            return regions;
+        }
+
+        private void FloodFill(bool[,] grid, bool[,] visited, int sx, int sy)
+        {
+            Queue<(int x, int y)> queue = new Queue<(int x, int y)>();
+            queue.Enqueue((sx, sy));
+            visited[sx, sy] = true;
+    
+            while (queue.Count > 0)
+            {
+                var (x, y) = queue.Dequeue();
+                int[] dx = {0, 0, 1, -1};
+                int[] dy = {1, -1, 0, 0};
+        
+                for (int d = 0; d < 4; d++)
+                {
+                    int nx = x + dx[d], ny = y + dy[d];
+                    if (nx >= 0 && nx < width && ny >= 0 && ny < height && 
+                        grid[nx, ny] && !visited[nx, ny])
+                    {
+                        visited[nx, ny] = true;
+                        queue.Enqueue((nx, ny));
+                    }
+                }
+            }
+        }
+
+        protected float CalculateFillPct(bool[,] grid)
+        {
+            int filled = 0;
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    if (grid[x, y]) filled++;
+                }
+            }
+            return (float)filled / (width * height) * 100f;
         }
 
         protected virtual void Start()
