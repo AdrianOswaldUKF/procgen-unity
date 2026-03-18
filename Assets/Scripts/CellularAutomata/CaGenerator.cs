@@ -41,7 +41,7 @@ namespace CellularAutomata
             GenerateGrid();
             ApplyIterations();
             
-            Telemetry.Instance.LogCA(
+            Telemetry.Instance?.LogCA(
                 deadEnds: CountDeadEnds(grid),
                 regions: CountRegions(grid), 
                 fillPct: CalculateFillPct(grid),
@@ -51,6 +51,12 @@ namespace CellularAutomata
             ClearPrefabs();
             PlacePrefabs();
             Telemetry.Instance?.EndPCG();
+        }
+        
+        [ContextMenu("Clear Parent")]
+        public void ClearParentContext()
+        {
+            ClearPrefabs();
         }
 
         protected virtual void ReadUIInputs()

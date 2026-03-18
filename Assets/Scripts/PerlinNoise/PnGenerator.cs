@@ -84,7 +84,7 @@ namespace PerlinNoise
             float stdDev = count > 0 ? Mathf.Sqrt((sumSq / count) - (avg * avg)) : 0f;
             float contrast = count > 0 ? stdDev / avg : 0f;
     
-            Telemetry.Instance.LogPerlin(avg, stdDev, contrast, scale);
+            Telemetry.Instance?.LogPerlin(avg, stdDev, contrast, scale);
         }
 
         [ContextMenu("Clear Parent")]

@@ -50,7 +50,7 @@ namespace LSystems
                 if (cmd == 'F' || cmd == 'R') segmentCount++;
             }
     
-            Telemetry.Instance.LogLSystem(
+            Telemetry.Instance?.LogLSystem(
                 stringLength, segmentCount, rules.Length, iterations
             );
         }

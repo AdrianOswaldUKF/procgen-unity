@@ -290,6 +290,11 @@ MonoBehaviour:
   scale: 8
   offsetX: 92829
   offsetY: 59987
+  heightMultiplier: 1
+  seed: 
+  seedInput: {fileID: 773251594}
+  scaleInput: {fileID: 1978286631}
+  heightMultiplierInput: {fileID: 834486092}
   parent: {fileID: 308923421}
   grassPrefab: {fileID: 3434798962816979122, guid: 710b8074b8936b4468584f066fe551f0, type: 3}
   rockPrefab: {fileID: 6241418528925602819, guid: 46ac5ccd6ce97fc49a50f554264dc945, type: 3}
@@ -1423,12 +1428,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29be9133595f04b45958dc2f9cf0b436, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Telemetry
-  fpsUpdateInterval: 0.5
-  CurrentFps: 0
-  IsGenerating: 0
-  CurrentElapsedMs: 0
-  fpsText: {fileID: 551682286}
-  genTimeText: {fileID: 628257816}
+  statsText: {fileID: 0}
+  fileName: PCG_Telemetry
+  pcgResults: []
 --- !u!4 &822977021
 Transform:
   m_ObjectHideFlags: 0

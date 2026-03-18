@@ -66,7 +66,7 @@ namespace CellularAutomata
                     
                     Vector3 pos = GridToWorld(x, y);
                     GameObject road = Instantiate(roadPrefab, pos, Quaternion.identity, parent);
-                    road.transform.localScale = Vector3.one * cellSize;
+                    road.transform.localScale = Vector3.one * (cellSize / 10f);
                 }
             }
         }

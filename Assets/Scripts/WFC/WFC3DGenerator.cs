@@ -25,7 +25,7 @@ public class WFC3DGenerator : MonoBehaviour
     [Header("Output")]
     public Transform parentForPrefabs;
 
-    [ContextMenu("Generate 3D WFC")]
+    [ContextMenu("Generate")]
     public void GenerateContext()
     {
         if (seedInput.text != "")
@@ -39,6 +39,12 @@ public class WFC3DGenerator : MonoBehaviour
         }
         ClearPrefabs();
         Generate();
+    }
+    
+    [ContextMenu("Clear Parent")]
+    public void ClearParentContext()
+    {
+        ClearPrefabs();
     }
 
     private void Generate()
@@ -98,7 +104,7 @@ public class WFC3DGenerator : MonoBehaviour
         avgEntropy = cellCount > 0 ? avgEntropy / cellCount : 0f;
         float moduleVariety = modules.Length > 0 ? cellCount / (float)(modules.Length * totalCells) : 0f;
     
-        Telemetry.Instance.LogWFC(attempts, propagationSteps, avgEntropy, moduleVariety);
+        Telemetry.Instance?.LogWFC(attempts, propagationSteps, avgEntropy, moduleVariety);
     }
 
     void Start()

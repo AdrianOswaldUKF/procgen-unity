@@ -1483,12 +1483,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29be9133595f04b45958dc2f9cf0b436, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Telemetry
-  fpsUpdateInterval: 0.5
-  CurrentFps: 0
-  IsGenerating: 0
-  CurrentElapsedMs: 0
-  fpsText: {fileID: 551682286}
-  genTimeText: {fileID: 628257816}
+  statsText: {fileID: 0}
+  fileName: PCG_Telemetry
+  pcgResults: []
 --- !u!4 &822977021
 Transform:
   m_ObjectHideFlags: 0
@@ -1957,14 +1954,18 @@ MonoBehaviour:
   width: 256
   height: 256
   scale: 3
-  threshold: 0.35
   offsetX: 93275
   offsetY: 20521
+  heightMultiplier: 1
+  seed: 
+  seedInput: {fileID: 773251594}
+  scaleInput: {fileID: 1978286631}
+  heightMultiplierInput: {fileID: 834486092}
+  parent: {fileID: 913468810}
   cellSize: 3
   wallHeight: 15
   floorPrefab: {fileID: 3202298322380306934, guid: d70781fe24fb1484fb4a915d5fe70c14, type: 3}
   wallPrefab: {fileID: 6521612999012265250, guid: 48eb0fc39c447b540933e1da409c784b, type: 3}
-  parent: {fileID: 913468810}
 --- !u!4 &913468810
 Transform:
   m_ObjectHideFlags: 0
