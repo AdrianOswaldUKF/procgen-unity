@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2452570286887872643
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3147775123337367078}
+  - component: {fileID: 7172489098557719831}
+  m_Layer: 0
+  m_Name: CaRoadGen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3147775123337367078
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2452570286887872643}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.5, y: 0.5, z: 0.5, w: 0.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 90}
+--- !u!114 &7172489098557719831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2452570286887872643}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2134785767feb04cb1cf1f48db14731, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CellularAutomata.CaRoad
+  width: 50
+  height: 50
+  cellSize: 1
+  seed: 
+  seedInput: {fileID: 0}
+  fillProbabilitySlider: {fileID: 0}
+  iterationsInput: {fileID: 0}
+  birthThresholdInput: {fileID: 0}
+  parent: {fileID: 3147775123337367078}
+  roadPrefab: {fileID: 2943899126550252284, guid: 46b3a9e587aed5c49a8d58b9647c284a, type: 3}
+  fillProbability: 0.161
+  iterations: 4
+  birthThreshold: 2
+  deathThreshold: 6

@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &469372263616708525
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7194254633201291662}
+  - component: {fileID: 4714756810475804609}
+  m_Layer: 0
+  m_Name: LsDungeonGen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7194254633201291662
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 469372263616708525}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4714756810475804609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 469372263616708525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52647268832efcc4db3931ba96b01aa0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LSystemDungeon
+  axiom: F
+  iterations: 4
+  rules:
+  - F=F[+F][-F]F
+  - X=F[+X][-X]X
+  - A=F[+A][-A]A
+  - B=F[+B][-B]B
+  step: 6
+  angle: 45
+  yOffset: 2
+  axiomInput: {fileID: 0}
+  iterationsInput: {fileID: 0}
+  rulesInput: {fileID: 0}
+  parent: {fileID: 7194254633201291662}
+  wallPrefab: {fileID: 8977831954645905737, guid: 7d2f5f75b0dd7d943b7aa01710db4958, type: 3}
+  wallWidth: 0.8
+  wallHeight: 4

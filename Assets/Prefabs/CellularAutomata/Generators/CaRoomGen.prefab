@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3494089739142883007
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4336040649577379102}
+  - component: {fileID: 402952742403132017}
+  m_Layer: 0
+  m_Name: CaRoomGen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4336040649577379102
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3494089739142883007}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.5, y: 0.5, z: 0.5, w: 0.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 90}
+--- !u!114 &402952742403132017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3494089739142883007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a47212c34816ec4dab7e225023d80ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CellularAutomata.CaRoom
+  width: 50
+  height: 50
+  cellSize: 2
+  seed: 
+  seedInput: {fileID: 0}
+  fillProbabilitySlider: {fileID: 0}
+  iterationsInput: {fileID: 0}
+  birthThresholdInput: {fileID: 0}
+  parent: {fileID: 4336040649577379102}
+  roomPrefab: {fileID: 7044788302127804204, guid: aa0304179e72d11478e2daf59061048f, type: 3}
+  fillProbability: 0.45
+  iterations: 4
+  birthThreshold: 4

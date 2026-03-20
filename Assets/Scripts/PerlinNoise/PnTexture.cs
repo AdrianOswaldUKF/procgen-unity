@@ -45,14 +45,14 @@ namespace PerlinNoise
             float stdDev = count > 0 ? Mathf.Sqrt((sumSq / count) - (avg * avg)) : 0f;
             float contrast = count > 0 ? stdDev / avg : 0f;
     
-            Telemetry.Instance?.LogPerlin(avg, stdDev, contrast, scale);
+            Metrics.Instance?.LogPerlin(avg, stdDev, contrast, scale);
         }
 
         void Start()
         {
-            Telemetry.Instance?.StartPCG("PerlinNoiseTexture");
+            Metrics.Instance?.StartPCG("PerlinNoiseTexture");
             Generate();
-            Telemetry.Instance?.EndPCG();
+            Metrics.Instance?.EndPCG();
         }
 
         Texture2D GenerateTexture()

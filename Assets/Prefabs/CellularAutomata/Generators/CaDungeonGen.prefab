@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5238214365773823167
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8338268360863210430}
+  - component: {fileID: 3230970701561600413}
+  m_Layer: 0
+  m_Name: CaDungeonGen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8338268360863210430
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5238214365773823167}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.5, y: 0.5, z: 0.5, w: 0.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 90}
+--- !u!114 &3230970701561600413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5238214365773823167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65775f0311f51cb41b1aa18325b7b54f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CellularAutomata.CaDungeon
+  width: 50
+  height: 50
+  cellSize: 1
+  seed: 
+  seedInput: {fileID: 0}
+  fillProbabilitySlider: {fileID: 0}
+  iterationsInput: {fileID: 0}
+  birthThresholdInput: {fileID: 0}
+  parent: {fileID: 8338268360863210430}
+  wallPrefab: {fileID: 6267759304431357588, guid: f0f71231736dac644a6bf4db5aa9e172, type: 3}
+  floorPrefab: {fileID: 4918791460043929631, guid: 0872ebd0c7444c34eaf09893105a5096, type: 3}
+  wallHeight: 5
+  fillProbability: 0.374
+  iterations: 4
+  birthThreshold: 4

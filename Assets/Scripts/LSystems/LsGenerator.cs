@@ -31,14 +31,14 @@ namespace LSystems
         public void Generate()
         {
             ReadUIInputs();
-            Telemetry.Instance?.StartPCG(TelemetryName);
+            Metrics.Instance?.StartPCG(TelemetryName);
             
             LSystem lsystem = new LSystem(rules);
             string result = lsystem.Expand(axiom, iterations);
             LogLSystemMetrics(result);
             RenderLSystem(result);
 
-            Telemetry.Instance?.EndPCG();
+            Metrics.Instance?.EndPCG();
         }
         
         protected void LogLSystemMetrics(string commands)
@@ -50,7 +50,7 @@ namespace LSystems
                 if (cmd == 'F' || cmd == 'R') segmentCount++;
             }
     
-            Telemetry.Instance?.LogLSystem(
+            Metrics.Instance?.LogLSystem(
                 stringLength, segmentCount, rules.Length, iterations
             );
         }

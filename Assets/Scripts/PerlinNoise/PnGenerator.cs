@@ -40,11 +40,11 @@ namespace PerlinNoise
             offsetY = Random.Range(0, 99999);
             
             ClearParent();
-            Telemetry.Instance?.StartPCG(TelemetryName);
+            Metrics.Instance?.StartPCG(TelemetryName);
             GenerateGrid();
             
             LogPerlinMetrics();
-            Telemetry.Instance?.EndPCG();
+            Metrics.Instance?.EndPCG();
         }
         
         private void ReadUIInputs()
@@ -84,7 +84,7 @@ namespace PerlinNoise
             float stdDev = count > 0 ? Mathf.Sqrt((sumSq / count) - (avg * avg)) : 0f;
             float contrast = count > 0 ? stdDev / avg : 0f;
     
-            Telemetry.Instance?.LogPerlin(avg, stdDev, contrast, scale);
+            Metrics.Instance?.LogPerlin(avg, stdDev, contrast, scale);
         }
 
         [ContextMenu("Clear Parent")]

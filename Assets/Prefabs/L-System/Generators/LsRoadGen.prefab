@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &754339506640166442
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6926551190914445057}
+  - component: {fileID: 2332855651325413429}
+  m_Layer: 0
+  m_Name: LsRoadGen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6926551190914445057
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 754339506640166442}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2332855651325413429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 754339506640166442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9274be3de74de0246b0a91f4da82ed59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LSystemRoad
+  axiom: FFFF
+  iterations: 1
+  rules:
+  - 'F=[+FF][-FF]FF[+FF][-FF]'
+  step: 3
+  angle: 90
+  yOffset: 0
+  axiomInput: {fileID: 0}
+  iterationsInput: {fileID: 0}
+  rulesInput: {fileID: 0}
+  parent: {fileID: 6926551190914445057}
+  roadPrefab: {fileID: 2943899126550252284, guid: 554e7b359d8647c4c9c6ca1d7d93420b, type: 3}
+  roadWidth: 1.5
+  roadHeight: 0.02

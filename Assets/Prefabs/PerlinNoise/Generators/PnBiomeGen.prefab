@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3968762338170819437
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7396765695328659422}
+  - component: {fileID: 7270295774156743990}
+  m_Layer: 0
+  m_Name: PnBiomeGen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7396765695328659422
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3968762338170819437}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7270295774156743990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3968762338170819437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd4f304db48d35e42b807807e2b810d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PerlinNoiseBiome
+  width: 64
+  height: 64
+  scale: 8
+  offsetX: 92829
+  offsetY: 59987
+  heightMultiplier: 1
+  seed: 
+  seedInput: {fileID: 0}
+  scaleInput: {fileID: 0}
+  heightMultiplierInput: {fileID: 0}
+  parent: {fileID: 7396765695328659422}
+  grassPrefab: {fileID: 3434798962816979122, guid: 710b8074b8936b4468584f066fe551f0, type: 3}
+  rockPrefab: {fileID: 6241418528925602819, guid: 46ac5ccd6ce97fc49a50f554264dc945, type: 3}
+  waterPrefab: {fileID: 6525271012435302873, guid: 9196436ff1db7dc43bbf7eb9cdb5f4d4, type: 3}

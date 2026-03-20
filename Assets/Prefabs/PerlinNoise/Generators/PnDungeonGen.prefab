@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1453897349255771662
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4374070308830803662}
+  - component: {fileID: 1881756497804224283}
+  m_Layer: 0
+  m_Name: PnDungeonGen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4374070308830803662
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1453897349255771662}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 15, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1881756497804224283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1453897349255771662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c7552b24f32a0746a7d8f60544a86ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PerlinNoiseDungeon
+  width: 256
+  height: 256
+  scale: 3
+  offsetX: 93275
+  offsetY: 20521
+  heightMultiplier: 1
+  seed: 
+  seedInput: {fileID: 0}
+  scaleInput: {fileID: 0}
+  heightMultiplierInput: {fileID: 0}
+  parent: {fileID: 4374070308830803662}
+  cellSize: 3
+  wallHeight: 15
+  floorPrefab: {fileID: 3202298322380306934, guid: d70781fe24fb1484fb4a915d5fe70c14, type: 3}
+  wallPrefab: {fileID: 6521612999012265250, guid: 48eb0fc39c447b540933e1da409c784b, type: 3}

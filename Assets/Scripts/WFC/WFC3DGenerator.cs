@@ -30,12 +30,12 @@ public class WFC3DGenerator : MonoBehaviour
     {
         if (seedInput.text != "")
         {
-            seed =  seedInput.text;
+            seed = seedInput.text;
         }
 
         if (maxRestartsInput.text != "")
         {
-            maxRestarts =  int.Parse(maxRestartsInput.text);
+            maxRestarts = int.Parse(maxRestartsInput.text);
         }
         ClearPrefabs();
         Generate();
@@ -49,12 +49,12 @@ public class WFC3DGenerator : MonoBehaviour
 
     private void Generate()
     {
-        Telemetry.Instance?.StartPCG("WFC3DGeneration");
+        Metrics.Instance?.StartPCG("WFC3DGeneration");
 
         if (modules == null || modules.Length == 0)
         {
             Debug.LogError("[WFC3D] modules not assigned.");
-            Telemetry.Instance?.EndPCG();
+            Metrics.Instance?.EndPCG();
             return;
         }
 
@@ -64,7 +64,7 @@ public class WFC3DGenerator : MonoBehaviour
         {
             attempts++;
             InitRandom();
-            ok = TryRun(out int[,,] result);
+            ok = TryRun(out int[,,] result, attempts);
             if (!ok)
             {
                 Debug.LogWarning("[WFC3D] attempt " + attempts + " failed, retrying...");
@@ -80,7 +80,7 @@ public class WFC3DGenerator : MonoBehaviour
         {
             Debug.LogError("[WFC3D] generation failed after maxRestarts=" + maxRestarts);
         }
-        Telemetry.Instance?.EndPCG();
+        Metrics.Instance?.EndPCG();
     }
     
     private void LogWFCMetrics(int attempts, int propagationSteps, HashSet<int>[,,] possible)
@@ -104,7 +104,7 @@ public class WFC3DGenerator : MonoBehaviour
         avgEntropy = cellCount > 0 ? avgEntropy / cellCount : 0f;
         float moduleVariety = modules.Length > 0 ? cellCount / (float)(modules.Length * totalCells) : 0f;
     
-        Telemetry.Instance?.LogWFC(attempts, propagationSteps, avgEntropy, moduleVariety);
+        Metrics.Instance?.LogWFC(attempts, propagationSteps, avgEntropy, moduleVariety);
     }
 
     void Start()
@@ -127,8 +127,8 @@ public class WFC3DGenerator : MonoBehaviour
         Random.InitState(usedSeed);
         Debug.Log("[WFC3D] using seed: " + usedSeed);
     }
-
-    private bool TryRun(out int[,,] result)
+    
+    private bool TryRun(out int[,,] result, int attempts)
     {
         result = new int[width, depth, height];
         int moduleCount = modules.Length;
@@ -152,35 +152,22 @@ public class WFC3DGenerator : MonoBehaviour
                 }
                 
                 if (modules[moduleAIndex].GetPort(0) == modules[moduleBIndex].GetPort(1))
-                {
                     compatibility[moduleAIndex, 0].Add(moduleBIndex);
-                }
                 
                 if (modules[moduleAIndex].GetPort(1) == modules[moduleBIndex].GetPort(0))
-                {
                     compatibility[moduleAIndex, 1].Add(moduleBIndex);
-                }
                 
                 if (modules[moduleAIndex].GetPort(2) == modules[moduleBIndex].GetPort(3))
-                {
                     compatibility[moduleAIndex, 2].Add(moduleBIndex);
-                }
                 
                 if (modules[moduleAIndex].GetPort(3) == modules[moduleBIndex].GetPort(2))
-                {
                     compatibility[moduleAIndex, 3].Add(moduleBIndex);
-                }
-
 
                 if (modules[moduleAIndex].GetPort(4) == modules[moduleBIndex].GetPort(5))
-                {
                     compatibility[moduleAIndex, 4].Add(moduleBIndex);
-                }
                 
                 if (modules[moduleAIndex].GetPort(5) == modules[moduleBIndex].GetPort(4))
-                {
                     compatibility[moduleAIndex, 5].Add(moduleBIndex);
-                }
             }
         }
         
@@ -201,15 +188,17 @@ public class WFC3DGenerator : MonoBehaviour
         }
         
         (int dx, int dy, int dz, int opposite)[] neighbours = {
-                (1,0,0,1),
-                (-1,0,0,0),
-                (0,0,1,3),
-                (0,0,-1,2),
-                (0,1,0,5),
-                (0,-1,0,4)
+            (1,0,0,1),
+            (-1,0,0,0),
+            (0,0,1,3),
+            (0,0,-1,2),
+            (0,1,0,5),
+            (0,-1,0,4)
         };
 
         Queue<(int x, int y, int z)> propagationQueue = new Queue<(int, int, int)>();
+        
+        int totalPropagationSteps = 0;
         
         int collapsedCount = 0;
         int totalCells = width * depth * height;
@@ -263,12 +252,13 @@ public class WFC3DGenerator : MonoBehaviour
             {
                 var (currX, currY, currZ) = propagationQueue.Dequeue();
                 
+                totalPropagationSteps++;
+                
                 for (int dir = 0; dir < neighbours.Length; dir++)
                 {
                     int nx = currX + neighbours[dir].dx;
                     int ny = currY + neighbours[dir].dy;
                     int nz = currZ + neighbours[dir].dz;
-                    int neighbourOppositeDir = neighbours[dir].opposite;
                     
                     if (nx < 0 || nx >= width || ny < 0 || ny >= depth || nz < 0 || nz >= height)
                     {
@@ -339,10 +329,9 @@ public class WFC3DGenerator : MonoBehaviour
             }
         }
         
-        LogWFCMetrics(1, propagationSteps: propagationQueue.Count, possible);
+        LogWFCMetrics(attempts, totalPropagationSteps, possible);
         return true; 
     }
-
 
     private int FirstOf(HashSet<int> s)
     {
@@ -359,13 +348,9 @@ public class WFC3DGenerator : MonoBehaviour
         if (old != null)
         {
             if (Application.isPlaying)
-            {
                 Destroy(old.gameObject);
-            }
             else
-            {
                 DestroyImmediate(old.gameObject);
-            }
         }
 
         GameObject root = new GameObject("WFC3D_Generated");
@@ -379,13 +364,9 @@ public class WFC3DGenerator : MonoBehaviour
             {
                 Transform ch = parentForPrefabs.GetChild(i);
                 if (Application.isPlaying)
-                {
                     Destroy(ch.gameObject);
-                }
                 else
-                {
                     DestroyImmediate(ch.gameObject);
-                }
             }
         }
 
@@ -427,13 +408,9 @@ public class WFC3DGenerator : MonoBehaviour
             {
                 Transform child = parentForPrefabs.GetChild(i);
                 if (Application.isPlaying)
-                {
                     Destroy(child.gameObject);
-                }
                 else
-                {
                     DestroyImmediate(child.gameObject);
-                }
             }
         }
         
@@ -441,13 +418,9 @@ public class WFC3DGenerator : MonoBehaviour
         if (oldRoot != null)
         {
             if (Application.isPlaying)
-            {
                 Destroy(oldRoot.gameObject);
-            }
             else
-            {
                 DestroyImmediate(oldRoot.gameObject);
-            }
         }
     }
 }

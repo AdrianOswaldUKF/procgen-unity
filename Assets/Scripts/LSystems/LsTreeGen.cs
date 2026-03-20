@@ -27,13 +27,13 @@ namespace LSystems
             if (rulesInput.text != "")
                 rules = rulesInput.text.Split(',');
 
-            Telemetry.Instance?.StartPCG("LSystemTree");
+            Metrics.Instance?.StartPCG("LSystemTree");
             LSystem expander = new LSystem(rules);
             string result = expander.Expand(axiom, iterations);
             LogLSystemMetrics(result);
 
             GetComponent<LsTreeRender>().Render(result);
-            Telemetry.Instance?.EndPCG();
+            Metrics.Instance?.EndPCG();
             ResetCylinderMesh();
         }
         
@@ -46,7 +46,7 @@ namespace LSystems
                 if (cmd == 'F' || cmd == 'R') segmentCount++;
             }
     
-            Telemetry.Instance?.LogLSystem(
+            Metrics.Instance?.LogLSystem(
                 stringLength, segmentCount, rules.Length, iterations
             );
         }

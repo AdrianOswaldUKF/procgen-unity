@@ -27,7 +27,7 @@ namespace PerlinNoise
         public void Generate()
         {
             ReadUIInputs();
-            Telemetry.Instance?.StartPCG("PerlinNoiseTerrain");
+            Metrics.Instance?.StartPCG("PerlinNoiseTerrain");
 
             if (terrain == null) 
                 terrain = GetComponent<Terrain>();
@@ -38,7 +38,7 @@ namespace PerlinNoise
             terrainObject?.SetActive(true);
             GenerateNoise();
 
-            Telemetry.Instance?.EndPCG();
+            Metrics.Instance?.EndPCG();
         }
         
         private void LogPerlinMetrics(float[,] heights, int octaves)
@@ -60,7 +60,7 @@ namespace PerlinNoise
             float stdDev = count > 0 ? Mathf.Sqrt((sumSq / count) - (avg * avg)) : 0f;
             float contrast = count > 0 ? stdDev / avg : 0f;
     
-            Telemetry.Instance?.LogPerlin(avg, stdDev, contrast, octaves);
+            Metrics.Instance?.LogPerlin(avg, stdDev, contrast, octaves);
         }
 
         private void ReadUIInputs()
