@@ -35,22 +35,23 @@ namespace CellularAutomata
         public void Generate()
         {
             ReadUIInputs();
-            Metrics.Instance?.StartPCG(TelemetryName);
+            Metrics.Instance?.StartPcg(TelemetryName);
 
             InitializeGrid();
             GenerateGrid();
             ApplyIterations();
             
-            Metrics.Instance?.LogCA(
+            Metrics.Instance?.LogCa(
                 deadEnds: CountDeadEnds(grid),
                 regions: CountRegions(grid), 
                 fillPct: CalculateFillPct(grid),
-                iterations: DefaultIterations
+                iterations: DefaultIterations,
+                birthThreshold: DefaultBirthThreshold
             );
             
             ClearPrefabs();
             PlacePrefabs();
-            Metrics.Instance?.EndPCG();
+            Metrics.Instance?.EndPcg();
         }
         
         [ContextMenu("Clear Parent")]

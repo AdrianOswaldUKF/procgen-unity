@@ -31,14 +31,14 @@ namespace LSystems
         public void Generate()
         {
             ReadUIInputs();
-            Metrics.Instance?.StartPCG(TelemetryName);
+            Metrics.Instance?.StartPcg(TelemetryName);
             
             LSystem lsystem = new LSystem(rules);
             string result = lsystem.Expand(axiom, iterations);
             LogLSystemMetrics(result);
             RenderLSystem(result);
 
-            Metrics.Instance?.EndPCG();
+            Metrics.Instance?.EndPcg();
         }
         
         protected void LogLSystemMetrics(string commands)
@@ -122,7 +122,6 @@ namespace LSystems
         protected virtual void Start()
         {
             SetupUI();
-            Generate();
         }
 
         protected virtual void SetupUI()

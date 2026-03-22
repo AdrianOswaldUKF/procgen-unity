@@ -50,9 +50,9 @@ namespace PerlinNoise
 
         void Start()
         {
-            Metrics.Instance?.StartPCG("PerlinNoiseTexture");
+            Metrics.Instance?.StartPcg("PerlinNoiseTexture");
             Generate();
-            Metrics.Instance?.EndPCG();
+            Metrics.Instance?.EndPcg();
         }
 
         Texture2D GenerateTexture()

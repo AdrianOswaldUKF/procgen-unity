@@ -40,11 +40,11 @@ namespace PerlinNoise
             offsetY = Random.Range(0, 99999);
             
             ClearParent();
-            Metrics.Instance?.StartPCG(TelemetryName);
+            Metrics.Instance?.StartPcg(TelemetryName);
             GenerateGrid();
             
             LogPerlinMetrics();
-            Metrics.Instance?.EndPCG();
+            Metrics.Instance?.EndPcg();
         }
         
         private void ReadUIInputs()
@@ -87,7 +87,7 @@ namespace PerlinNoise
             Metrics.Instance?.LogPerlin(avg, stdDev, contrast, scale);
         }
 
-        [ContextMenu("Clear Parent")]
+        [ContextMenu("Clear Parent")] 
         public void ClearParentContext()
         {
             ClearParent();

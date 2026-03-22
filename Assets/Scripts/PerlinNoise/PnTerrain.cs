@@ -27,7 +27,7 @@ namespace PerlinNoise
         public void Generate()
         {
             ReadUIInputs();
-            Metrics.Instance?.StartPCG("PerlinNoiseTerrain");
+            Metrics.Instance?.StartPcg("PerlinNoiseTerrain");
 
             if (terrain == null) 
                 terrain = GetComponent<Terrain>();
@@ -38,7 +38,7 @@ namespace PerlinNoise
             terrainObject?.SetActive(true);
             GenerateNoise();
 
-            Metrics.Instance?.EndPCG();
+            Metrics.Instance?.EndPcg();
         }
         
         private void LogPerlinMetrics(float[,] heights, int octaves)

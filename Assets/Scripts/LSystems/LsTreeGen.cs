@@ -7,10 +7,12 @@ namespace LSystems
 {
     public class LsTreeGen : MonoBehaviour
     {
+        [Header("L-System")]
         public string axiom = "FB";
         public int iterations = 4;
         public string[] rules;
-
+        
+        [Header("UI")]
         public TMP_InputField axiomInput;
         public TMP_InputField iterationsInput;
         public TMP_InputField rulesInput;
@@ -27,13 +29,13 @@ namespace LSystems
             if (rulesInput.text != "")
                 rules = rulesInput.text.Split(',');
 
-            Metrics.Instance?.StartPCG("LSystemTree");
+            Metrics.Instance?.StartPcg("LSystemTree");
             LSystem expander = new LSystem(rules);
             string result = expander.Expand(axiom, iterations);
             LogLSystemMetrics(result);
 
             GetComponent<LsTreeRender>().Render(result);
-            Metrics.Instance?.EndPCG();
+            Metrics.Instance?.EndPcg();
             ResetCylinderMesh();
         }
         
@@ -53,19 +55,19 @@ namespace LSystems
 
         void Start()
         {
-            axiomInput.text = axiom;
-            iterationsInput.text = iterations.ToString();
+            SetupUI();
+        }
+        
+        private void SetupUI()
+        {
+            if (axiomInput != null) 
+                axiomInput.text = axiom;
             
-            foreach (string str in rules)
-            {
-                rulesInput.text += str;
-                if (str == rules.Last())
-                    return;
-
-                rulesInput.text += ",";
-            }
-
-            Generate();
+            if (iterationsInput != null) 
+                iterationsInput.text = iterations.ToString();
+            
+            if (rulesInput != null) 
+                rulesInput.text = string.Join(",", rules);
         }
         
         void ResetCylinderMesh()
