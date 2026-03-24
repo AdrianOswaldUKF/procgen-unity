@@ -12,6 +12,10 @@ public class Metrics : MonoBehaviour
     
     [Header("UI")]
     public TMP_Text statsText;
+    private float _uiUpdateTimer;
+    private const float UIUpdateDelay = 0.5f;
+    private float _lastFps;
+    private double _lastCpuMs, _lastGpuMs, _lastMemMb;
     
     [Header("Export")]
     public string fileName = "PCG_Metrics";
@@ -92,6 +96,7 @@ public class Metrics : MonoBehaviour
         _timer += Time.unscaledDeltaTime;
         
         float fps = Time.unscaledDeltaTime > 0 ? 1f / Time.unscaledDeltaTime : 0f;
+        _lastFps = fps;
 
         if (_isRecordingFps)
         {
@@ -122,13 +127,21 @@ public class Metrics : MonoBehaviour
             _exported = true;
         }
         
-        if (statsText == null) return;
-        double totalMemMb = _totalMem.LastValue / (1024.0 * 1024.0);
-        statsText.text = $"FPS: {fps:F0}\n" +
-                         $"Gen: {_currentPcg.genTimeMs:F1}ms\n" +
-                         $"CPU: {_mainThreadTime.LastValue * 1e-6:F1}ms\n" +
-                         $"GPU: {_gpuFrameTime.LastValue * 1e-6:F1}ms\n" +
-                         $"Mem: {totalMemMb:F1}MB";
+        _uiUpdateTimer += Time.unscaledDeltaTime;
+        if (_uiUpdateTimer >= UIUpdateDelay)
+        {
+            _uiUpdateTimer = 0f;
+            _lastCpuMs = _mainThreadTime.LastValue * 1e-6;
+            _lastGpuMs = _gpuFrameTime.LastValue * 1e-6;
+            _lastMemMb = _totalMem.LastValue / (1024.0 * 1024.0);
+        
+            if (statsText == null) return;
+            statsText.text = $"FPS: {_lastFps:F0}\n" +
+                             $"Gen: {_currentPcg.genTimeMs:F1}ms\n" +
+                             $"CPU: {_lastCpuMs:F1}ms\n" +
+                             $"GPU: {_lastGpuMs:F1}ms\n" +
+                             $"Mem: {_lastMemMb:F1}MB";
+        }
     }
     
     void ExportCsv()

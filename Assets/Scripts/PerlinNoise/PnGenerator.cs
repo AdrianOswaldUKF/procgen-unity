@@ -26,7 +26,7 @@ namespace PerlinNoise
         public Transform parent;
 
         protected abstract string TelemetryName { get; }
-        protected abstract void GenerateGrid();
+        protected abstract void GenerateNoise();
 
         [ContextMenu("Generate")]
         public void Generate()
@@ -41,7 +41,7 @@ namespace PerlinNoise
             
             ClearParent();
             Metrics.Instance?.StartPcg(TelemetryName);
-            GenerateGrid();
+            GenerateNoise();
             
             LogPerlinMetrics();
             Metrics.Instance?.EndPcg();
@@ -105,14 +105,19 @@ namespace PerlinNoise
                     DestroyImmediate(child.gameObject);
             }
         }
+        
+        private void SetupUI()
+        {
+            seedInput.text = seed;
+            scaleInput.text = scale.ToString();
+            heightMultiplierInput.text = heightMultiplier.ToString();
+        }
 
         protected virtual void Start()
         {
             if (Application.isPlaying)
             {
-                seedInput.text = seed;
-                scaleInput.text = scale.ToString();
-                heightMultiplierInput.text = heightMultiplier.ToString();
+                SetupUI();
             }
         }
     }

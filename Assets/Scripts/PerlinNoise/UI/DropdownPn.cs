@@ -52,14 +52,6 @@ namespace PerlinNoise.UI
 
                     generators[4].SetActive(true);
                     break;
-                case 5:
-                    foreach (GameObject gen in generators)
-                    {
-                        gen.SetActive(false);
-                    }
-
-                    generators[5].SetActive(true);
-                    break;
             }
         }
     }

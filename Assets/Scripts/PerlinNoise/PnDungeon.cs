@@ -14,7 +14,7 @@ namespace PerlinNoise
 
         protected override string TelemetryName => "PerlinNoiseDungeon";
 
-        protected override void GenerateGrid()
+        protected override void GenerateNoise()
         {
             float originX = -width * cellSize / 2f;
             float originZ = -height * cellSize / 2f;

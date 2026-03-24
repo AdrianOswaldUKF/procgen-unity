@@ -5,8 +5,6 @@ namespace PerlinNoise.UI
     public class GeneratePnBtn : MonoBehaviour
     {
         public PnGenerator[] generators;
-        public PnTerrain terrainGen;
-        public PnTexture textureGen;
         public DropdownPn dropdown;
 
         public void Generate()
@@ -27,9 +25,6 @@ namespace PerlinNoise.UI
                     break;
                 case 4:
                     generators[4].Generate();
-                    break;
-                case 5:
-                    generators[5].Generate();
                     break;
             }
         }

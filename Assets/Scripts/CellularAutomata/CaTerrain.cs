@@ -5,8 +5,9 @@ namespace CellularAutomata
     public class CaTerrain : CaGenerator
     {
         [Header("Terrain")]
-        public GameObject terrainPrefab;
-        public float terrainHeight = 1f;
+        public Terrain terrain;
+        private TerrainData _terrainData;
+        private int _heightRes;
 
         [Header("CA Settings")]
         public float fillProbability = 0.5f;
@@ -24,29 +25,69 @@ namespace CellularAutomata
             if (Application.isPlaying)
             {
                 fillProbability = fillProbabilitySlider?.value ?? fillProbability;
-                
-                if (iterationsInput != null && iterationsInput.text != "") 
+
+                if (iterationsInput != null && iterationsInput.text != "")
                     iterations = int.Parse(iterationsInput.text);
-                
-                if (birthThresholdInput != null && birthThresholdInput.text != "") 
+
+                if (birthThresholdInput != null && birthThresholdInput.text != "")
                     birthThreshold = int.Parse(birthThresholdInput.text);
             }
         }
 
         protected override void PlacePrefabs()
         {
-            for (int x = 0; x < width; x++)
+            if (terrain == null)
             {
-                for (int y = 0; y < height; y++)
+                Debug.LogWarning("[CaTerrain] Terrain not assigned.");
+                return;
+            }
+
+            SetupTerrainData();
+            float[,] heights = new float[_heightRes, _heightRes];
+
+            for (int x = 0; x < _heightRes; x++)
+            {
+                for (int y = 0; y < _heightRes; y++)
                 {
-                    if (!grid[x, y]) 
-                        continue;
-                    
-                    Vector3 pos = GridToWorld(x, y) + Vector3.up * (terrainHeight * 0.5f);
-                    GameObject go = Instantiate(terrainPrefab, pos, Quaternion.identity, parent);
-                    go.transform.localScale = new Vector3(cellSize, terrainHeight, cellSize);
+                    int gx = Mathf.FloorToInt((float)x / _heightRes * width);
+                    int gy = Mathf.FloorToInt((float)y / _heightRes * height);
+
+                    gx = Mathf.Clamp(gx, 0, width - 1);
+                    gy = Mathf.Clamp(gy, 0, height - 1);
+
+                    if (grid[gx, gy])
+                    {
+                        heights[x, y] = 0.1f;
+                    }
+                    else
+                    {
+                        heights[x, y] = 0f;
+                    }
                 }
             }
+
+            _terrainData.SetHeights(0, 0, heights);
+        }
+        
+        [ContextMenu("Reset Terrain")]
+        private void ResetTerrain()
+        {
+            if (_terrainData == null)
+                return;
+
+            float[,] heights = new float[_heightRes, _heightRes];
+            _terrainData.SetHeights(0, 0, heights);
+        }
+
+        private void SetupTerrainData()
+        {
+            if (terrain == null)
+            {
+                Debug.LogWarning("[CaTerrain] Terrain not assigned.");
+                return;
+            }
+            _terrainData = terrain.terrainData;
+            _heightRes = _terrainData.heightmapResolution;
         }
 
         protected override void SetupUI()
