@@ -1524,6 +1524,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6666840978219235005, guid: bc2e429f1d90cf74e9f0fcc687c0e4d1, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6666840978219235005, guid: bc2e429f1d90cf74e9f0fcc687c0e4d1, type: 3}
       propertyPath: axiomInput
       value: 
       objectReference: {fileID: 1389962922}
@@ -1596,7 +1600,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 656100607}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 656100609}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6383e0f40fe5be24aad753501267e6da, type: 3}
   m_Name: 
@@ -2348,7 +2352,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 50, y: 1, z: 50}
+  m_LocalScale: {x: 25, y: 1, z: 25}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -4754,6 +4758,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 1003257540}
     m_Modifications:
     - target: {fileID: 4758246092072510259, guid: 919241f093eab6741966b38a7fa42d7b, type: 3}
+      propertyPath: step
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758246092072510259, guid: 919241f093eab6741966b38a7fa42d7b, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758246092072510259, guid: 919241f093eab6741966b38a7fa42d7b, type: 3}
       propertyPath: axiomInput
       value: 
       objectReference: {fileID: 1389962922}
@@ -5782,6 +5794,10 @@ PrefabInstance:
     - target: {fileID: 754339506640166442, guid: 90b170d3326a1b1458e941c9328ab708, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2332855651325413429, guid: 90b170d3326a1b1458e941c9328ab708, type: 3}
+      propertyPath: axiom
+      value: FFFF
       objectReference: {fileID: 0}
     - target: {fileID: 2332855651325413429, guid: 90b170d3326a1b1458e941c9328ab708, type: 3}
       propertyPath: axiomInput

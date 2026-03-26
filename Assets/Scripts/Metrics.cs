@@ -35,7 +35,7 @@ public class Metrics : MonoBehaviour
         public double cpuMs, gpuMs, gcMb, totalMemMb;
         
         public float avgValue, stdDev, contrast;
-        public int octaves;
+        public int scale;
         
         public int stringLength, segmentCount, branchFactor, maxDepth;
         
@@ -155,7 +155,7 @@ public class Metrics : MonoBehaviour
             "deadEnds,regions,fillPct,iterations,birthThreshold," +
             "stringLength,segmentCount,branchFactor,maxDepth," +
             "attempts,propagationSteps,avgEntropy,moduleVariety," +
-            "avgValue,stdDev,contrast,octaves");
+            "avgValue,stdDev,contrast,scale");
     
         foreach (var r in pcgResults)
         {
@@ -180,7 +180,7 @@ public class Metrics : MonoBehaviour
                 $"{r.avgValue.ToString("F3", CultureInfo.InvariantCulture)}," +
                 $"{r.stdDev.ToString("F3", CultureInfo.InvariantCulture)}," +
                 $"{r.contrast.ToString("F3", CultureInfo.InvariantCulture)}," +
-                $"{r.octaves}");
+                $"{r.scale}");
         }
     
         string buildFolder = Path.GetDirectoryName(Application.dataPath) ?? Application.dataPath;
@@ -191,8 +191,10 @@ public class Metrics : MonoBehaviour
         Debug.Log($"EXPORT: {path} | PCG runs: {pcgResults.Count}");
     }
 
-    public void StartPcg(string pcgName, string size = "Medium", int width = 64, int height = 64)
+    public void StartPcg(string pcgName, int width = 64, int height = 64)
     {
+        string size = GetSizeCategory(width, height);
+        
         _pcgStartTime = Time.realtimeSinceStartupAsDouble;
         _currentPcg = new PcgStats 
         { 
@@ -204,6 +206,20 @@ public class Metrics : MonoBehaviour
             unityVersion = Application.unityVersion,
             platform = Application.platform.ToString()
         };
+    }
+    
+    private string GetSizeCategory(int w, int h)
+    {
+        int area = w * h;
+        
+        if (area <= 32*32) 
+            return "Small";
+        if (area <= 64*64) 
+            return "Medium"; 
+        if (area <= 128*128) 
+            return "Large";
+        
+        return "XL";
     }
     
     public void EndPcg()
@@ -226,12 +242,12 @@ public class Metrics : MonoBehaviour
         _currentPcg.birthThreshold = birthThreshold;
     }
     
-    public void LogPerlin(float avgValue, float stdDev, float contrast, int octaves = 0)
+    public void LogPerlin(float avgValue, float stdDev, float contrast, int scale = 0)
     {
         _currentPcg.avgValue = avgValue;
         _currentPcg.stdDev = stdDev;
         _currentPcg.contrast = contrast;
-        _currentPcg.octaves = octaves;
+        _currentPcg.scale = scale;
     }
     
     public void LogLSystem(int stringLength, int segmentCount, int branchFactor, int maxDepth)

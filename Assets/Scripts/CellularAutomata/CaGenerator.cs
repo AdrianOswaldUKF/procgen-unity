@@ -26,7 +26,7 @@ namespace CellularAutomata
         protected bool[,] grid;
         protected bool[,] buffer;
 
-        protected abstract float DefaultFillProbability { get; }
+        protected abstract float DefaultFillProbability {get; }
         protected abstract int DefaultIterations { get; }
         protected abstract int DefaultBirthThreshold { get; }
         protected abstract string TelemetryName { get; }
@@ -120,8 +120,9 @@ namespace CellularAutomata
                 {
                     if (ox == 0 && oy == 0) 
                         continue;
-                    
-                    int nx = cx + ox, ny = cy + oy;
+
+                    int nx = cx + ox;
+                    int ny = cy + oy;
                     
                     if (nx >= 0 && ny >= 0 && nx < width && ny < height && grid[nx, ny])
                         count++;
@@ -144,7 +145,9 @@ namespace CellularAutomata
 
         private void ClearPrefabs()
         {
-            if (parent == null) return;
+            if (parent == null)
+                return;
+            
             for (int i = parent.childCount - 1; i >= 0; i--)
             {
                 Transform child = parent.GetChild(i);
@@ -232,8 +235,6 @@ namespace CellularAutomata
             SetupUI();
         }
 
-        protected virtual void SetupUI()
-        {
-        }
+        protected virtual void SetupUI() {}
     }
 }

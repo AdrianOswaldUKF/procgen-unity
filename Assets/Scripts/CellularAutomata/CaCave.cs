@@ -39,7 +39,8 @@ namespace CellularAutomata
             {
                 for (int y = 0; y < height; y++)
                 {
-                    if (!grid[x, y]) continue;
+                    if (!grid[x, y]) 
+                        continue;
                     Vector3 basePos = GridToWorld(x, y);
                     Vector3 cavePos = basePos + Vector3.up * (caveHeight * 0.5f);
                     GameObject go = Instantiate(prefab, cavePos, Quaternion.identity, parent);
