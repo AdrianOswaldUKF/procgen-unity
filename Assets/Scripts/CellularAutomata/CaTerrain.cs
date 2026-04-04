@@ -70,8 +70,9 @@ namespace CellularAutomata
         }
         
         [ContextMenu("Reset Terrain")]
-        private void ResetTerrain()
+        public void ResetTerrain()
         {
+            SetupTerrainData();
             if (_terrainData == null)
                 return;
 

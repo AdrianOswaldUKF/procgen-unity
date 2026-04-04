@@ -48,17 +48,16 @@ namespace PerlinNoise
         
         private void ReadUIInputs()
         {
-            if (Application.isPlaying)
-            {
-                if (!string.IsNullOrEmpty(seedInput.text))
-                    seed = seedInput.text;
-
-                if (!string.IsNullOrEmpty(scaleInput.text))
-                    scale = int.Parse(scaleInput.text);
-
-                if (!string.IsNullOrEmpty(heightMultiplierInput.text))
-                    heightMultiplier = float.Parse(heightMultiplierInput.text);
-            }
+            if (!Application.isPlaying) 
+                return;
+    
+            seed = seedInput?.text ?? "";
+    
+            if (!string.IsNullOrEmpty(scaleInput.text)) 
+                scale = int.Parse(scaleInput.text);
+            
+            if (!string.IsNullOrEmpty(heightMultiplierInput.text)) 
+                heightMultiplier = float.Parse(heightMultiplierInput.text);
         }
         
         protected void LogPerlinMetrics()

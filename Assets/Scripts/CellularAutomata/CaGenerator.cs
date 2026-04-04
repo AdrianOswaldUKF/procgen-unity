@@ -62,11 +62,10 @@ namespace CellularAutomata
 
         protected virtual void ReadUIInputs()
         {
-            if (Application.isPlaying)
-            {
-                if (!string.IsNullOrEmpty(seedInput.text))
-                    seed = seedInput.text;
-            }
+            if (!Application.isPlaying) 
+                return;
+            
+            seed = seedInput?.text ?? "";
         }
 
         protected virtual void InitializeGrid()

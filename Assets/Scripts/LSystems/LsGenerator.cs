@@ -63,11 +63,17 @@ namespace LSystems
 
         protected virtual void ReadUIInputs()
         {
-            if (!Application.isPlaying) return;
+            if (!Application.isPlaying) 
+                return;
             
-            if (axiomInput != null && axiomInput.text != "") axiom = axiomInput.text;
-            if (iterationsInput != null && iterationsInput.text != "") iterations = int.Parse(iterationsInput.text);
-            if (rulesInput != null && rulesInput.text != "") rules = rulesInput.text.Split(',');
+            if (!string.IsNullOrEmpty(axiomInput.text)) 
+                axiom = axiomInput.text;
+            
+            if (!string.IsNullOrEmpty(iterationsInput.text)) 
+                iterations = int.Parse(iterationsInput.text);
+            
+            if (!string.IsNullOrEmpty(rulesInput.text)) 
+                rules = rulesInput.text.Split(',');
         }
 
         private void RenderLSystem(string commands)

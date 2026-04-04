@@ -9,6 +9,9 @@ namespace PerlinNoise.UI
 
         public void Generate()
         {
+            if (Metrics.Instance != null && !Metrics.Instance.CanGenerate)
+                return;
+            
             switch (dropdown.activeIndex)
             {
                 case 0:
@@ -25,6 +28,34 @@ namespace PerlinNoise.UI
                     break;
                 case 4:
                     generators[4].Generate();
+                    break;
+            }
+        }
+        
+        public void Reset()
+        {
+            if (Metrics.Instance != null && !Metrics.Instance.CanGenerate)
+                return;
+            
+            switch (dropdown.activeIndex)
+            {
+                case 0:
+                    generators[0].ClearParentContext();
+                    break;
+                case 1:
+                    generators[1].ClearParentContext();
+                    break;
+                case 2:
+                    generators[2].ClearParentContext();
+                    break;
+                case 3:
+                    generators[3].ClearParentContext();
+                    break;
+                case 4:
+                    generators[4].ClearParentContext();
+                    break;
+                case 5:
+                    generators[5].ClearParentContext();
                     break;
             }
         }

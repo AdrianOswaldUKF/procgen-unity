@@ -26,15 +26,13 @@ namespace WFC
         [ContextMenu("Generate")]
         public void GenerateWFC()
         {
-            if (seedInput.text != "")
-            {
-                seed = seedInput.text;
-            }
+            if (Metrics.Instance != null && !Metrics.Instance.CanGenerate)
+                return;
+            
+            seed = seedInput?.text ?? "";
 
-            if (maxRestartsInput.text != "")
-            {
+            if (!string.IsNullOrEmpty(maxRestartsInput.text))
                 maxRestarts = int.Parse(maxRestartsInput.text);
-            }
 
             ClearPrefabs();
             Generate();
@@ -43,6 +41,9 @@ namespace WFC
         [ContextMenu("Clear Parent")]
         public void ClearParentContext()
         {
+            if (!Metrics.Instance.CanGenerate)
+                return;
+            
             ClearPrefabs();
         }
 

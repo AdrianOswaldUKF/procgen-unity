@@ -12,6 +12,7 @@ public class Metrics : MonoBehaviour
     
     [Header("UI")]
     public TMP_Text statsText;
+    public TMP_Text infoText;
     private float _uiUpdateTimer;
     private const float UIUpdateDelay = 0.5f;
     private float _lastFps;
@@ -55,15 +56,12 @@ public class Metrics : MonoBehaviour
     private double _pcgStartTime;
     
     private bool _isRecordingFps;
+    public bool CanGenerate => !_isRecordingFps;
     private float _fpsSum;
     private float _fpsMin;
     private int _fpsCount;
     private float _fpsTimer;
     private const float FpsMeasureDuration = 3f;
-
-    float _timer;
-    const float BenchmarkDuration = 60f;
-    bool _exported;
     
     void Awake()
     {
@@ -73,6 +71,7 @@ public class Metrics : MonoBehaviour
             return;
         }
         Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     void OnEnable()
@@ -93,8 +92,6 @@ public class Metrics : MonoBehaviour
     
     void Update() 
     {
-        _timer += Time.unscaledDeltaTime;
-        
         float fps = Time.unscaledDeltaTime > 0 ? 1f / Time.unscaledDeltaTime : 0f;
         _lastFps = fps;
 
@@ -117,14 +114,7 @@ public class Metrics : MonoBehaviour
                 _currentPcg.gcMb = _gcAlloc.LastValue / (1024.0 * 1024.0);
                 _currentPcg.totalMemMb = _totalMem.LastValue / (1024.0 * 1024.0);
                 pcgResults.Add(_currentPcg);
-                Debug.Log($"PCG [{_currentPcg.name}] {_currentPcg.size}: {_currentPcg.genTimeMs:F1}ms | avgFPS: {_currentPcg.avgFps:F0} | minFPS: {_currentPcg.minFps:F0} | CPU: {_currentPcg.cpuMs:F1}ms | Mem: {_currentPcg.totalMemMb:F1}MB");
             }
-        }
-        
-        if (_timer > BenchmarkDuration && !_exported)
-        {
-            ExportCsv();
-            _exported = true;
         }
         
         _uiUpdateTimer += Time.unscaledDeltaTime;
@@ -142,9 +132,22 @@ public class Metrics : MonoBehaviour
                              $"GPU: {_lastGpuMs:F1}ms\n" +
                              $"Mem: {_lastMemMb:F1}MB";
         }
+        
+        if (infoText != null)
+        {
+            if (_isRecordingFps)
+            {
+                float progress = _fpsTimer / FpsMeasureDuration * 100f;
+                infoText.text = $"Meranie výkonu: {progress:F0}%";
+            }
+            else
+            {
+                infoText.text = $"Pripravený | Záznamy: {pcgResults.Count}";
+            }
+        }
     }
     
-    void ExportCsv()
+    public void ExportCsv()
     {
         StringBuilder sb = new StringBuilder();
         
@@ -188,7 +191,6 @@ public class Metrics : MonoBehaviour
         string path = Path.Combine(buildFolder, filename);
     
         File.WriteAllText(path, sb.ToString());
-        Debug.Log($"EXPORT: {path} | PCG runs: {pcgResults.Count}");
     }
 
     public void StartPcg(string pcgName, int width = 64, int height = 64)

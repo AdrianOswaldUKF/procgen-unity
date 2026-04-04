@@ -9,6 +9,16 @@ namespace MainMenu.UI
         private GameObject main;
         [SerializeField]
         private GameObject secondary;
+
+        public void Start()
+        {
+            if (!PlayerPrefs.HasKey("returned"))
+            {
+                return;
+            }
+            StartButton();
+            PlayerPrefs.DeleteKey("returned");
+        }
         
         public void StartButton()
         {
@@ -27,22 +37,22 @@ namespace MainMenu.UI
             Application.Quit();
         }
 
-        public void CaButton()
+        public void CellularAutomata()
         {
             SceneManager.LoadScene(1);
         }
 
-        public void LsButton()
+        public void LSystem()
         {
             SceneManager.LoadScene(2);
         }
 
-        public void PnButton()
+        public void PerlinNoise()
         {
             SceneManager.LoadScene(3);
         }
 
-        public void WfcButton()
+        public void WaveFunctionCollapse()
         {
             SceneManager.LoadScene(4);
         }

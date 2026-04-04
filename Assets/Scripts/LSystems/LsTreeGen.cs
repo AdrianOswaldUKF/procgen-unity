@@ -71,7 +71,9 @@ namespace LSystems
         
         void ResetCylinderMesh()
         {
-            EditorUtility.SetDirty(gameObject);
+            #if UNITY_EDITOR
+                EditorUtility.SetDirty(gameObject);
+            #endif
             Resources.UnloadUnusedAssets();
         }
     }
