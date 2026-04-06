@@ -21,7 +21,8 @@ namespace PerlinNoise
             }
             _terrainData = terrain.terrainData;
             _heightRes = _terrainData.heightmapResolution;
-            width = height = _heightRes;
+            
+            _terrainData.size = new Vector3(width, _terrainData.size.y, height);
         }
         
         [ContextMenu("Reset Terrain")]
@@ -38,22 +39,23 @@ namespace PerlinNoise
         {
             if (terrain == null) 
                 terrain = GetComponent<Terrain>();
-            
+    
             SetupTerrainData();
             terrainObject?.SetActive(true);
             ResetTerrain();
-            
+    
             float[,] heights = new float[_heightRes, _heightRes];
             for (int x = 0; x < _heightRes; x++)
             {
                 for (int y = 0; y < _heightRes; y++)
                 {
-                    float xCoord = (float)x / _heightRes * scale + offsetX;
-                    float yCoord = (float)y / _heightRes * scale + offsetY;
+                    float xCoord = (float)x / width * scale + offsetX;
+                    float yCoord = (float)y / height * scale + offsetY;
                     heights[x, y] = Mathf.PerlinNoise(xCoord, yCoord) * heightMultiplier;
                 }
             }
             _terrainData.SetHeights(0, 0, heights);
+            terrain.transform.position = new Vector3(-width / 2f, terrain.transform.position.y, -height / 2f);
         }
     }
 }

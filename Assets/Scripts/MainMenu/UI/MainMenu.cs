@@ -34,6 +34,10 @@ namespace MainMenu.UI
 
         public void QuitButton()
         {
+            if (Metrics.Instance != null && !Metrics.Instance.CanGenerate)
+                return;
+            
+            Metrics.Instance?.ExportCsv();
             Application.Quit();
         }
 

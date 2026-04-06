@@ -70,13 +70,5 @@ namespace CellularAutomata
             }
             _texture.Apply();
         }
-
-        protected override void SetupUI()
-        {
-            seedInput.text = seed;
-            fillProbabilitySlider.value = fillProbability;
-            iterationsInput.text = iterations.ToString();
-            birthThresholdInput.text = birthThreshold.ToString();
-        }
     }
 }

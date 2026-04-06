@@ -9,7 +9,7 @@ namespace PerlinNoise
 
         [Header("Perlin Settings")]
         public float heightThreshold = 0.6f;
-        public float moistureThreshold = 0.7f;
+        public float waterThreshold = 0.7f;
 
         private TerrainData _terrainData;
         private int _alphaRes;
@@ -32,34 +32,22 @@ namespace PerlinNoise
             {
                 for (int ay = 0; ay < _alphaRes; ay++)
                 {
-                    int gx = Mathf.FloorToInt((float)ax / _alphaRes * width);
-                    int gy = Mathf.FloorToInt((float)ay / _alphaRes * height);
-
-                    gx = Mathf.Clamp(gx, 0, width - 1);
-                    gy = Mathf.Clamp(gy, 0, height - 1);
-
-                    float cordX = (float)gx / width * scale + offsetX;
-                    float cordY = (float)gy / height * scale + offsetY;
+                    float cordX = (float)ax / width * scale + offsetX;
+                    float cordY = (float)ay / height * scale + offsetY;
 
                     float heightNoise = Mathf.PerlinNoise(cordX, cordY);
-                    float moistureNoise = Mathf.PerlinNoise(cordX + 500f, cordY + 500f);
-                    
+                    float waterNoise = Mathf.PerlinNoise(cordX + 500f, cordY + 500f);
+
                     alphaMaps[ay, ax, 0] = 0f;
                     alphaMaps[ay, ax, 1] = 0f;
                     alphaMaps[ay, ax, 2] = 0f;
-                    
+
                     if (heightNoise > heightThreshold)
-                    {
                         alphaMaps[ay, ax, 1] = 1f;
-                    }
-                    else if (moistureNoise > moistureThreshold)
-                    {
+                    else if (waterNoise > waterThreshold)
                         alphaMaps[ay, ax, 2] = 1f;
-                    }
                     else
-                    {
                         alphaMaps[ay, ax, 0] = 1f;
-                    }
                 }
             }
 
@@ -75,6 +63,9 @@ namespace PerlinNoise
             }
             _terrainData = terrain.terrainData;
             _alphaRes = _terrainData.alphamapResolution;
+            
+            _terrainData.size = new Vector3(width, _terrainData.size.y, height);
+            terrain.transform.position = new Vector3(-width / 2f, terrain.transform.position.y, -height / 2f);
         }
     }
 }

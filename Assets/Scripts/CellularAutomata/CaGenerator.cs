@@ -15,6 +15,9 @@ namespace CellularAutomata
         public string seed;
 
         [Header("UI")] 
+        public TMP_InputField widthInput;
+        public TMP_InputField heightInput;
+        public TMP_InputField cellSizeInput;
         public TMP_InputField seedInput;
         public Slider fillProbabilitySlider;
         public TMP_InputField iterationsInput;
@@ -64,6 +67,15 @@ namespace CellularAutomata
         {
             if (!Application.isPlaying) 
                 return;
+            
+            if (!string.IsNullOrEmpty(widthInput.text))
+                width = int.Parse(widthInput.text);
+            
+            if (!string.IsNullOrEmpty(heightInput.text))
+                height = int.Parse(heightInput.text);
+            
+            if (!string.IsNullOrEmpty(cellSizeInput.text))
+                cellSize = float.Parse(cellSizeInput.text);
             
             seed = seedInput?.text ?? "";
         }
@@ -135,7 +147,9 @@ namespace CellularAutomata
 
         protected Vector3 GridToWorld(int x, int y)
         {
-            return new Vector3(
+            Vector3 origin = parent != null ? parent.position : Vector3.zero;
+            
+            return origin + new Vector3(
                 -width * cellSize * 0.5f + x * cellSize,
                 0f,
                 -height * cellSize * 0.5f + y * cellSize

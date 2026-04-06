@@ -49,8 +49,8 @@ namespace CellularAutomata
                     }
                     else if (floorPrefab != null)
                     {
-                        GameObject floor = Instantiate(floorPrefab, basePos, Quaternion.identity, parent);
-                        floor.transform.localScale = Vector3.one * cellSize;
+                        GameObject floor = Instantiate(floorPrefab, basePos + Vector3.up * 0.1f, Quaternion.identity, parent);
+                        floor.transform.localScale = new Vector3(cellSize / 10f, 1f, cellSize / 10f);
                     }
                 }
             }
@@ -58,10 +58,26 @@ namespace CellularAutomata
 
         protected override void SetupUI()
         {
-            seedInput.text = seed;
-            fillProbabilitySlider.value = fillProbability;
-            iterationsInput.text = iterations.ToString();
-            birthThresholdInput.text = birthThreshold.ToString();
+            if (widthInput != null) 
+                widthInput.text = width.ToString();
+            
+            if (heightInput != null) 
+                heightInput.text = height.ToString();
+            
+            if (cellSizeInput != null) 
+                cellSizeInput.text = cellSize.ToString();
+            
+            if (seedInput != null) 
+                seedInput.text = seed;
+            
+            if (fillProbabilitySlider != null) 
+                fillProbabilitySlider.value = fillProbability;
+            
+            if (iterationsInput != null) 
+                iterationsInput.text = iterations.ToString();
+            
+            if (birthThresholdInput != null) 
+                birthThresholdInput.text = birthThreshold.ToString();
         }
     }
 }

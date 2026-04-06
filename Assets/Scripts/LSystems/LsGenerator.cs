@@ -36,6 +36,8 @@ namespace LSystems
             LSystem lsystem = new LSystem(rules);
             string result = lsystem.Expand(axiom, iterations);
             LogLSystemMetrics(result);
+            
+            ClearParent();
             RenderLSystem(result);
 
             Metrics.Instance?.EndPcg();
@@ -78,10 +80,11 @@ namespace LSystems
 
         private void RenderLSystem(string commands)
         {
-            ClearParent();
             Stack<LSystemState> stack = new Stack<LSystemState>();
-            Vector3 pos = Vector3.zero + Vector3.up * yOffset;
-            Quaternion rot = Quaternion.identity;
+            
+            Vector3 origin = parent != null ? parent.position : Vector3.zero;
+            Vector3 pos = origin + Vector3.up * yOffset;
+            Quaternion rot = parent != null ? parent.rotation : Quaternion.identity;
             Vector3 lastPos = pos;
 
             foreach (char cmd in commands)
@@ -114,10 +117,12 @@ namespace LSystems
 
         private void ClearParent()
         {
-            if (parent == null) return;
-            while (parent.childCount > 0)
+            if (parent == null)
+                return;
+            
+            for (int i = parent.childCount - 1; i >= 0; i--)
             {
-                Transform child = parent.GetChild(0);
+                Transform child = parent.GetChild(i);
                 if (Application.isPlaying)
                     Destroy(child.gameObject);
                 else

@@ -65,6 +65,7 @@ namespace CellularAutomata
                         continue;
                     
                     Vector3 pos = GridToWorld(x, y);
+                    pos.y = 0.1f;
                     GameObject road = Instantiate(roadPrefab, pos, Quaternion.identity, parent);
                     road.transform.localScale = Vector3.one * (cellSize / 10f);
                 }
@@ -73,10 +74,26 @@ namespace CellularAutomata
 
         protected override void SetupUI()
         {
-            seedInput.text = seed;
-            fillProbabilitySlider.value = fillProbability;
-            iterationsInput.text = iterations.ToString();
-            birthThresholdInput.text = birthThreshold.ToString();
+            if (widthInput != null) 
+                widthInput.text = width.ToString();
+            
+            if (heightInput != null) 
+                heightInput.text = height.ToString();
+            
+            if (cellSizeInput != null) 
+                cellSizeInput.text = cellSize.ToString();
+            
+            if (seedInput != null) 
+                seedInput.text = seed;
+            
+            if (fillProbabilitySlider != null) 
+                fillProbabilitySlider.value = fillProbability;
+            
+            if (iterationsInput != null) 
+                iterationsInput.text = iterations.ToString();
+            
+            if (birthThresholdInput != null) 
+                birthThresholdInput.text = birthThreshold.ToString();
         }
     }
 }

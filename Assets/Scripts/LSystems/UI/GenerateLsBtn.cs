@@ -5,6 +5,7 @@ namespace LSystems.UI
     public class GenerateLsBtn : MonoBehaviour
     {
         public LsTreeGen treeGen;
+        public LsTreeRender treeRender;
         public LsGenerator[] generators;
         public DropdownLs dropdown;
 
@@ -41,22 +42,19 @@ namespace LSystems.UI
             switch (dropdown.activeIndex)
             {
                 case 0:
-                    generators[0].ClearParentContext();
+                    treeRender.ClearTree();
                     break;
                 case 1:
-                    generators[1].ClearParentContext();
+                    generators[0].ClearParentContext();
                     break;
                 case 2:
-                    generators[2].ClearParentContext();
+                    generators[1].ClearParentContext();
                     break;
                 case 3:
-                    generators[3].ClearParentContext();
+                    generators[2].ClearParentContext();
                     break;
                 case 4:
-                    generators[4].ClearParentContext();
-                    break;
-                case 5:
-                    generators[5].ClearParentContext();
+                    generators[3].ClearParentContext();
                     break;
             }
         }

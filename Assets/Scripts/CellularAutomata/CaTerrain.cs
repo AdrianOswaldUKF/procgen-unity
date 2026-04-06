@@ -89,14 +89,33 @@ namespace CellularAutomata
             }
             _terrainData = terrain.terrainData;
             _heightRes = _terrainData.heightmapResolution;
+            
+            _terrainData.size = new Vector3(width, _terrainData.size.y, height);
+            terrain.transform.position = new Vector3(-width / 2f, terrain.transform.position.y, -height / 2f);
         }
 
         protected override void SetupUI()
         {
-            seedInput.text = seed;
-            fillProbabilitySlider.value = fillProbability;
-            iterationsInput.text = iterations.ToString();
-            birthThresholdInput.text = birthThreshold.ToString();
+            if (widthInput != null) 
+                widthInput.text = width.ToString();
+            
+            if (heightInput != null) 
+                heightInput.text = height.ToString();
+            
+            if (cellSizeInput != null) 
+                cellSizeInput.text = cellSize.ToString();
+            
+            if (seedInput != null) 
+                seedInput.text = seed;
+            
+            if (fillProbabilitySlider != null) 
+                fillProbabilitySlider.value = fillProbability;
+            
+            if (iterationsInput != null) 
+                iterationsInput.text = iterations.ToString();
+            
+            if (birthThresholdInput != null) 
+                birthThresholdInput.text = birthThreshold.ToString();
         }
     }
 }

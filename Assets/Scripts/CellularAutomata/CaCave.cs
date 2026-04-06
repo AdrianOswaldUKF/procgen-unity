@@ -6,7 +6,7 @@ namespace CellularAutomata
     {
         [Header("Cave")]
         public GameObject prefab;
-        public float caveHeight = 2f;
+        public float caveHeight = 15f;
 
         [Header("CA Settings")]
         public float fillProbability = 0.65f;
@@ -51,10 +51,26 @@ namespace CellularAutomata
 
         protected override void SetupUI()
         {
-            seedInput.text = seed;
-            fillProbabilitySlider.value = fillProbability;
-            iterationsInput.text = iterations.ToString();
-            birthThresholdInput.text = birthThreshold.ToString();
+            if (widthInput != null) 
+                widthInput.text = width.ToString();
+            
+            if (heightInput != null) 
+                heightInput.text = height.ToString();
+            
+            if (cellSizeInput != null) 
+                cellSizeInput.text = cellSize.ToString();
+            
+            if (seedInput != null) 
+                seedInput.text = seed;
+            
+            if (fillProbabilitySlider != null) 
+                fillProbabilitySlider.value = fillProbability;
+            
+            if (iterationsInput != null) 
+                iterationsInput.text = iterations.ToString();
+            
+            if (birthThresholdInput != null) 
+                birthThresholdInput.text = birthThreshold.ToString();
         }
     }
 }

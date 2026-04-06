@@ -17,6 +17,8 @@ namespace PerlinNoise
         public string seed;
         
         [Header("UI")] 
+        public TMP_InputField widthInput;
+        public TMP_InputField heightInput;
         public TMP_InputField seedInput;
         public TMP_InputField scaleInput;
         public TMP_InputField heightMultiplierInput;
@@ -50,6 +52,12 @@ namespace PerlinNoise
         {
             if (!Application.isPlaying) 
                 return;
+            
+            if (!string.IsNullOrEmpty(widthInput.text))
+                width = int.Parse(widthInput.text);
+            
+            if (!string.IsNullOrEmpty(heightInput.text))
+                height = int.Parse(heightInput.text);
     
             seed = seedInput?.text ?? "";
     
@@ -91,32 +99,42 @@ namespace PerlinNoise
             ClearParent();
         }
 
-        protected void ClearParent()
+        private void ClearParent()
         {
-            if (parent == null) return;
-            while (parent.childCount > 0)
+            if (parent == null)
+                return;
+            
+            for (int i = parent.childCount - 1; i >= 0; i--)
             {
-                Transform child = parent.GetChild(0);
-                if (Application.isPlaying) 
+                Transform child = parent.GetChild(i);
+                if (Application.isPlaying)
                     Destroy(child.gameObject);
-                else 
+                else
                     DestroyImmediate(child.gameObject);
             }
         }
         
         private void SetupUI()
         {
-            seedInput.text = seed;
-            scaleInput.text = scale.ToString();
-            heightMultiplierInput.text = heightMultiplier.ToString();
+            if (widthInput != null) 
+                widthInput.text = width.ToString();
+            
+            if (heightInput != null) 
+                heightInput.text = height.ToString();
+            
+            if (seedInput != null)
+                seedInput.text = seed;
+            
+            if (scaleInput != null) 
+                scaleInput.text = scale.ToString();
+            
+            if (heightMultiplierInput != null) 
+                heightMultiplierInput.text = heightMultiplier.ToString();
         }
 
         protected virtual void Start()
         {
-            if (Application.isPlaying)
-            {
-                SetupUI();
-            }
+            SetupUI();
         }
     }
 }

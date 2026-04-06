@@ -8,26 +8,38 @@ namespace WFC
 {
     public class WFC3DGenerator : MonoBehaviour
     {
-        [Header("Grid")] public int width = 8;
+        [Header("Grid")] 
+        public int width = 8;
         public int height = 8;
         public int depth = 4;
         public float cellSize = 1f;
 
-        [Header("Modules")] public ModuleDef[] modules;
+        [Header("Modules")] 
+        public ModuleDef[] modules;
 
-        [Header("Random")] public string seed;
+        [Header("Random")] 
+        public string seed;
         public int maxRestarts = 20;
 
+        public TMP_InputField widthInput;
+        public TMP_InputField heightInput;
         public TMP_InputField seedInput;
         public TMP_InputField maxRestartsInput;
 
-        [Header("Output")] public Transform parentForPrefabs;
+        [Header("Output")] 
+        public Transform parentForPrefabs;
 
         [ContextMenu("Generate")]
         public void GenerateWFC()
         {
             if (Metrics.Instance != null && !Metrics.Instance.CanGenerate)
                 return;
+            
+            if (!string.IsNullOrEmpty(widthInput.text))
+                width = int.Parse(widthInput.text);
+            
+            if (!string.IsNullOrEmpty(heightInput.text))
+                height = int.Parse(heightInput.text);
             
             seed = seedInput?.text ?? "";
 
@@ -37,9 +49,14 @@ namespace WFC
             ClearPrefabs();
             Generate();
         }
-
+        
         [ContextMenu("Clear Parent")]
         public void ClearParentContext()
+        {
+            ClearPrefabs();
+        }
+        
+        public void ClearParent()
         {
             if (!Metrics.Instance.CanGenerate)
                 return;
@@ -110,8 +127,22 @@ namespace WFC
 
         void Start()
         {
-            seedInput.text = seed;
-            maxRestartsInput.text = maxRestarts.ToString();
+            SetupUI();
+        }
+
+        private void SetupUI()
+        {
+            if (widthInput != null) 
+                widthInput.text = width.ToString();
+            
+            if (heightInput != null) 
+                heightInput.text = height.ToString();
+            
+            if (seedInput != null) 
+                seedInput.text = seed;
+            
+            if (maxRestartsInput != null) 
+                maxRestartsInput.text = maxRestarts.ToString();
         }
 
         private void InitRandom()

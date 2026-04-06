@@ -19,13 +19,13 @@ namespace LSystems
         [ContextMenu("Generate")]
         public void Generate()
         {
-            if (axiomInput.text != "")
+            if (!string.IsNullOrEmpty(axiomInput.text))
                 axiom = axiomInput.text;
 
-            if (iterationsInput.text != "")
+            if (!string.IsNullOrEmpty(iterationsInput.text))
                 iterations = int.Parse(iterationsInput.text);
 
-            if (rulesInput.text != "")
+            if (!string.IsNullOrEmpty(rulesInput.text))
                 rules = rulesInput.text.Split(',');
 
             Metrics.Instance?.StartPcg("LSystemTree");

@@ -193,7 +193,7 @@ public class Metrics : MonoBehaviour
         File.WriteAllText(path, sb.ToString());
     }
     
-    public void SetUIReferences(TMP_Text stats, TMP_Text info)
+    public void UpdateUI(TMP_Text stats, TMP_Text info)
     {
         statsText = stats;
         infoText = info;

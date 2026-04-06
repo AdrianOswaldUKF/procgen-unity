@@ -7,10 +7,6 @@ namespace UI
     {
         public void Back()
         {
-            if (Metrics.Instance != null && !Metrics.Instance.CanGenerate)
-                return;
-            
-            Metrics.Instance?.ExportCsv();
             PlayerPrefs.SetInt("returned", 1);
             SceneManager.LoadScene(0);
         }
