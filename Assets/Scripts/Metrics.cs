@@ -29,7 +29,7 @@ public class Metrics : MonoBehaviour
     [System.Serializable]
     public struct PcgStats
     {
-        public string name, size;
+        public string name;
         public int width, height;
         public double genTimeMs;
         public float avgFps, minFps;
@@ -153,7 +153,7 @@ public class Metrics : MonoBehaviour
         
         sb.AppendLine(
             "timestamp,unityVersion,platform," +
-            "name,size,width,height," +
+            "name,width,height," +
             "genTimeMs,avgFps,minFps,cpuMs,gpuMs,gcMb,totalMemMb," +
             "deadEnds,regions,fillPct,iterations,birthThreshold," +
             "stringLength,segmentCount,branchFactor,maxDepth," +
@@ -164,7 +164,7 @@ public class Metrics : MonoBehaviour
         {
             sb.AppendLine(
                 $"{r.timestamp},{r.unityVersion},{r.platform}," +
-                $"{r.name},{r.size},{r.width},{r.height}," +
+                $"{r.name},{r.width},{r.height}," +
                 $"{r.genTimeMs.ToString("F1", CultureInfo.InvariantCulture)}," +
                 $"{r.avgFps.ToString("F1", CultureInfo.InvariantCulture)}," +
                 $"{r.minFps.ToString("F1", CultureInfo.InvariantCulture)}," +
@@ -192,36 +192,25 @@ public class Metrics : MonoBehaviour
     
         File.WriteAllText(path, sb.ToString());
     }
+    
+    public void SetUIReferences(TMP_Text stats, TMP_Text info)
+    {
+        statsText = stats;
+        infoText = info;
+    }
 
     public void StartPcg(string pcgName, int width = 64, int height = 64)
     {
-        string size = GetSizeCategory(width, height);
-        
         _pcgStartTime = Time.realtimeSinceStartupAsDouble;
         _currentPcg = new PcgStats 
         { 
             name = pcgName,
-            size = size, 
             width = width,
             height = height,
             timestamp = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
             unityVersion = Application.unityVersion,
             platform = Application.platform.ToString()
         };
-    }
-    
-    private string GetSizeCategory(int w, int h)
-    {
-        int area = w * h;
-        
-        if (area <= 32*32) 
-            return "Small";
-        if (area <= 64*64) 
-            return "Medium"; 
-        if (area <= 128*128) 
-            return "Large";
-        
-        return "XL";
     }
     
     public void EndPcg()
