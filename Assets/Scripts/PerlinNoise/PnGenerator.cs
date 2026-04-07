@@ -41,7 +41,7 @@ namespace PerlinNoise
             offsetY = Random.Range(0, 99999);
             
             ClearParent();
-            Metrics.Instance?.StartPcg(TelemetryName);
+            Metrics.Instance?.StartPcg(TelemetryName, width, height);
             GenerateNoise();
             
             LogPerlinMetrics();

@@ -38,7 +38,7 @@ namespace CellularAutomata
         public void Generate()
         {
             ReadUIInputs();
-            Metrics.Instance?.StartPcg(TelemetryName);
+            Metrics.Instance?.StartPcg(TelemetryName, width, height);
 
             InitializeGrid();
             GenerateGrid();

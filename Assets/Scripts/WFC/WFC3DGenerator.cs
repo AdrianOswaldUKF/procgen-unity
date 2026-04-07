@@ -66,7 +66,7 @@ namespace WFC
 
         private void Generate()
         {
-            Metrics.Instance?.StartPcg("WFC3DGeneration");
+            Metrics.Instance?.StartPcg("WFC3DGeneration", width, height);
 
             if (modules == null || modules.Length == 0)
             {
