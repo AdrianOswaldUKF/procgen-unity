@@ -1,3 +1,7 @@
+// Ls kód inšpirácia od eleonora
+// https://www.youtube.com/watch?v=Sf6k6kvpRu4&
+// Unity Dokumentácia: https://docs.unity3d.com/Packages/com.unity.splines@2.8/api/index.html
+
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Splines;

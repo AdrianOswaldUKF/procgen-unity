@@ -1,3 +1,6 @@
+// Pn kód inšpirácia z 
+// Unity Dokumentácia: https://docs.unity3d.com/ScriptReference/Mathf.PerlinNoise.html
+
 using UnityEngine;
 
 namespace PerlinNoise
@@ -58,7 +61,7 @@ namespace PerlinNoise
         {
             if (terrain == null)
             {
-                Debug.LogWarning("[CaTerrain] Terrain not assigned.");
+                Debug.LogWarning("[PnBiome] Terrain not assigned.");
                 return;
             }
             _terrainData = terrain.terrainData;

@@ -1,3 +1,7 @@
+// Pn kód inšpirácia od DVS Devs(Dan Violet Sagmiller)
+// https://www.youtube.com/watch?v=1qSjCu8av7Q
+// Unity Dokumentácia: https://docs.unity3d.com/ScriptReference/Mathf.PerlinNoise.html
+
 using UnityEngine;
 
 namespace PerlinNoise

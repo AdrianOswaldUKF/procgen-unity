@@ -1,3 +1,6 @@
+// Ls kód inšpirácia od eleonora
+// https://www.youtube.com/watch?v=Sf6k6kvpRu4&
+
 using TMPro;
 using UnityEditor;
 using UnityEngine;

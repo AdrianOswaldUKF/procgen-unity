@@ -1,3 +1,6 @@
+// WFC kód inšpirácia od Maxim Gumin
+// https://github.com/mxgmn/WaveFunctionCollapse
+
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -6,18 +9,18 @@ using Random = UnityEngine.Random;
 
 namespace WFC
 {
-    public class WFC3DGenerator : MonoBehaviour
+    public class Wfc3DGenerator : MonoBehaviour
     {
-        [Header("Grid")] 
+        [Header("Grid")]
         public int width = 8;
         public int height = 8;
         public int depth = 4;
         public float cellSize = 1f;
 
-        [Header("Modules")] 
+        [Header("Modules")]
         public ModuleDef[] modules;
 
-        [Header("Random")] 
+        [Header("Random")]
         public string seed;
         public int maxRestarts = 20;
 
@@ -26,41 +29,76 @@ namespace WFC
         public TMP_InputField seedInput;
         public TMP_InputField maxRestartsInput;
 
-        [Header("Output")] 
+        [Header("Output")]
         public Transform parentForPrefabs;
+
+        private int[,,] _generatedGrid;
+        private bool _generationSuccessful;
+        private int _propagationStepCount;
+        private HashSet<int>[,,] _possibleStates;
+
+        private int[] _allowedModuleMarks;
+        private int _allowedModuleToken = 1;
+        private readonly List<int> _modulesToRemove = new List<int>(128);
+
+        private struct CellPriorityEntry : IComparable<CellPriorityEntry>
+        {
+            public int x;
+            public int y;
+            public int z;
+            public int count;
+            public int order;
+
+            public int CompareTo(CellPriorityEntry other)
+            {
+                int compare = count.CompareTo(other.count);
+                if (compare != 0) return compare;
+
+                compare = order.CompareTo(other.order);
+                if (compare != 0) return compare;
+
+                compare = x.CompareTo(other.x);
+                if (compare != 0) return compare;
+
+                compare = y.CompareTo(other.y);
+                if (compare != 0) return compare;
+
+                return z.CompareTo(other.z);
+            }
+        }
 
         [ContextMenu("Generate")]
         public void GenerateWFC()
         {
             if (Metrics.Instance != null && !Metrics.Instance.CanGenerate)
                 return;
-            
-            if (!string.IsNullOrEmpty(widthInput.text))
+
+            if (widthInput != null && !string.IsNullOrEmpty(widthInput.text))
                 width = int.Parse(widthInput.text);
-            
-            if (!string.IsNullOrEmpty(heightInput.text))
+
+            if (heightInput != null && !string.IsNullOrEmpty(heightInput.text))
                 height = int.Parse(heightInput.text);
-            
+
             seed = seedInput?.text ?? "";
 
-            if (!string.IsNullOrEmpty(maxRestartsInput.text))
+            if (maxRestartsInput != null && !string.IsNullOrEmpty(maxRestartsInput.text))
                 maxRestarts = int.Parse(maxRestartsInput.text);
 
             ClearPrefabs();
             Generate();
         }
-        
+
         [ContextMenu("Clear Parent")]
         public void ClearParentContext()
         {
             ClearPrefabs();
         }
-        
+
         public void ClearParent()
         {
-            if (!Metrics.Instance.CanGenerate)
+            if (Metrics.Instance != null && !Metrics.Instance.CanGenerate)
                 return;
-            
+
             ClearPrefabs();
         }
 
@@ -75,35 +113,37 @@ namespace WFC
                 return;
             }
 
-            int attempts = 0;
-            bool ok = false;
-            while (attempts < maxRestarts && !ok)
+            int attemptNumber = 0;
+            _generationSuccessful = false;
+
+            while (attemptNumber < maxRestarts && !_generationSuccessful)
             {
-                attempts++;
+                attemptNumber++;
                 InitRandom();
-                ok = TryRun(out int[,,] result, attempts);
-                if (!ok)
+
+                _generationSuccessful = TryRun(out _generatedGrid, out _propagationStepCount, out _possibleStates);
+
+                if (!_generationSuccessful)
                 {
-                    Debug.LogWarning("[WFC3D] attempt " + attempts + " failed, retrying...");
+                    Debug.LogWarning("[WFC3D] attempt " + attemptNumber + " failed, retrying...");
                 }
                 else
                 {
-                    Debug.Log("[WFC3D] success on attempt " + attempts);
-                    InstantiateResult(result);
+                    Debug.Log("[WFC3D] success on attempt " + attemptNumber);
+                    LogWfcMetrics(attemptNumber, _propagationStepCount, _possibleStates);
+                    InstantiateResult(_generatedGrid);
                 }
             }
 
-            if (!ok)
-            {
+            if (!_generationSuccessful)
                 Debug.LogError("[WFC3D] generation failed after maxRestarts=" + maxRestarts);
-            }
 
             Metrics.Instance?.EndPcg();
         }
 
-        private void LogWFCMetrics(int attempts, int propagationSteps, HashSet<int>[,,] possible)
+        private void LogWfcMetrics(int attemptNumber, int propagationSteps, HashSet<int>[,,] states)
         {
-            float avgEntropy = 0f;
+            float averageEntropy = 0f;
             int totalCells = width * depth * height;
             int cellCount = 0;
 
@@ -113,16 +153,16 @@ namespace WFC
                 {
                     for (int z = 0; z < height; z++)
                     {
-                        avgEntropy += possible[x, y, z].Count;
+                        averageEntropy += states[x, y, z].Count;
                         cellCount++;
                     }
                 }
             }
 
-            avgEntropy = cellCount > 0 ? avgEntropy / cellCount : 0f;
+            averageEntropy = cellCount > 0 ? averageEntropy / cellCount : 0f;
             float moduleVariety = modules.Length > 0 ? cellCount / (float)(modules.Length * totalCells) : 0f;
 
-            Metrics.Instance?.LogWfc(attempts, propagationSteps, avgEntropy, moduleVariety);
+            Metrics.Instance?.LogWfc(attemptNumber, propagationSteps, averageEntropy, moduleVariety);
         }
 
         void Start()
@@ -132,16 +172,16 @@ namespace WFC
 
         private void SetupUI()
         {
-            if (widthInput != null) 
+            if (widthInput != null)
                 widthInput.text = width.ToString();
-            
-            if (heightInput != null) 
+
+            if (heightInput != null)
                 heightInput.text = height.ToString();
-            
-            if (seedInput != null) 
+
+            if (seedInput != null)
                 seedInput.text = seed;
-            
-            if (maxRestartsInput != null) 
+
+            if (maxRestartsInput != null)
                 maxRestartsInput.text = maxRestarts.ToString();
         }
 
@@ -161,64 +201,59 @@ namespace WFC
             Debug.Log("[WFC3D] using seed: " + usedSeed);
         }
 
-        private bool TryRun(out int[,,] result, int attempts)
+        private bool TryRun(out int[,,] result, out int propagationSteps, out HashSet<int>[,,] states)
         {
-            result = new int[width, depth, height];
             int moduleCount = modules.Length;
+            int totalCells = width * depth * height;
 
-            List<int>[,] compatibility = new List<int>[moduleCount, 6];
-            for (int moduleIndex = 0; moduleIndex < moduleCount; moduleIndex++)
+            result = new int[width, depth, height];
+            propagationSteps = 0;
+            states = new HashSet<int>[width, depth, height];
+
+            if (_allowedModuleMarks == null || _allowedModuleMarks.Length != moduleCount)
+                _allowedModuleMarks = new int[moduleCount];
+
+            if (_allowedModuleToken == int.MaxValue - 1000)
             {
-                for (int direction = 0; direction < 6; direction++)
-                {
-                    compatibility[moduleIndex, direction] = new List<int>();
-                }
+                Array.Clear(_allowedModuleMarks, 0, _allowedModuleMarks.Length);
+                _allowedModuleToken = 1;
             }
 
-            for (int moduleAIndex = 0; moduleAIndex < moduleCount; moduleAIndex++)
-            {
-                for (int moduleBIndex = 0; moduleBIndex < moduleCount; moduleBIndex++)
-                {
-                    if (modules[moduleAIndex] == null || modules[moduleBIndex] == null)
-                    {
-                        continue;
-                    }
+            _modulesToRemove.Clear();
 
-                    if (modules[moduleAIndex].GetPort(0) == modules[moduleBIndex].GetPort(1))
-                        compatibility[moduleAIndex, 0].Add(moduleBIndex);
+            List<int>[][] compatibilityByModuleAndDirection = BuildCompatibilityTable(moduleCount);
 
-                    if (modules[moduleAIndex].GetPort(1) == modules[moduleBIndex].GetPort(0))
-                        compatibility[moduleAIndex, 1].Add(moduleBIndex);
+            HashSet<int>[,,] possibleModuleStates = new HashSet<int>[width, depth, height];
+            SortedSet<CellPriorityEntry> cellPriorityQueue = new SortedSet<CellPriorityEntry>();
+            int queueOrder = 0;
+            int collapsedCellCount = 0;
 
-                    if (modules[moduleAIndex].GetPort(2) == modules[moduleBIndex].GetPort(3))
-                        compatibility[moduleAIndex, 2].Add(moduleBIndex);
-
-                    if (modules[moduleAIndex].GetPort(3) == modules[moduleBIndex].GetPort(2))
-                        compatibility[moduleAIndex, 3].Add(moduleBIndex);
-
-                    if (modules[moduleAIndex].GetPort(4) == modules[moduleBIndex].GetPort(5))
-                        compatibility[moduleAIndex, 4].Add(moduleBIndex);
-
-                    if (modules[moduleAIndex].GetPort(5) == modules[moduleBIndex].GetPort(4))
-                        compatibility[moduleAIndex, 5].Add(moduleBIndex);
-                }
-            }
-
-            HashSet<int>[,,] possible = new HashSet<int>[width, depth, height];
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < depth; y++)
                 {
                     for (int z = 0; z < height; z++)
                     {
-                        possible[x, y, z] = new HashSet<int>();
+                        possibleModuleStates[x, y, z] = new HashSet<int>(moduleCount);
+
                         for (int moduleIndex = 0; moduleIndex < moduleCount; moduleIndex++)
                         {
-                            possible[x, y, z].Add(moduleIndex);
+                            possibleModuleStates[x, y, z].Add(moduleIndex);
                         }
+
+                        cellPriorityQueue.Add(new CellPriorityEntry
+                        {
+                            x = x,
+                            y = y,
+                            z = z,
+                            count = moduleCount,
+                            order = queueOrder++
+                        });
                     }
                 }
             }
+
+            states = possibleModuleStates;
 
             (int dx, int dy, int dz, int opposite)[] neighbours =
             {
@@ -232,129 +267,100 @@ namespace WFC
 
             Queue<(int x, int y, int z)> propagationQueue = new Queue<(int, int, int)>();
 
-            int totalPropagationSteps = 0;
-
-            int collapsedCount = 0;
-            int totalCells = width * depth * height;
-
-            while (collapsedCount < totalCells)
+            while (collapsedCellCount < totalCells)
             {
-                int bestX = -1, bestY = -1, bestZ = -1;
-                int bestCount = int.MaxValue;
-                for (int x = 0; x < width; x++)
-                {
-                    for (int y = 0; y < depth; y++)
-                    {
-                        for (int z = 0; z < height; z++)
-                        {
-                            int candidateCount = possible[x, y, z].Count;
-                            if (candidateCount == 1)
-                            {
-                                continue;
-                            }
-
-                            if (candidateCount < bestCount)
-                            {
-                                bestCount = candidateCount;
-                                bestX = x;
-                                bestY = y;
-                                bestZ = z;
-                            }
-                        }
-                    }
-                }
-
-                if (bestX == -1)
-                {
+                if (!TryPopNextCell(cellPriorityQueue, possibleModuleStates, out CellPriorityEntry selectedCell))
                     break;
-                }
 
-                List<int> choices = new List<int>(possible[bestX, bestY, bestZ]);
-                if (choices.Count == 0)
+                HashSet<int> selectedCellStates = possibleModuleStates[selectedCell.x, selectedCell.y, selectedCell.z];
+                if (selectedCellStates.Count <= 1)
+                    continue;
+
+                int chosenModule = PickRandomFromSet(selectedCellStates);
+
+                selectedCellStates.Clear();
+                selectedCellStates.Add(chosenModule);
+                collapsedCellCount++;
+
+                propagationQueue.Enqueue((selectedCell.x, selectedCell.y, selectedCell.z));
+
+                bool contradictionFound = false;
+
+                while (propagationQueue.Count > 0 && !contradictionFound)
                 {
-                    return false;
-                }
+                    var (currentX, currentY, currentZ) = propagationQueue.Dequeue();
+                    propagationSteps++;
 
-                int chosenModule = choices[Random.Range(0, choices.Count)];
-
-                possible[bestX, bestY, bestZ].Clear();
-                possible[bestX, bestY, bestZ].Add(chosenModule);
-
-                propagationQueue.Enqueue((bestX, bestY, bestZ));
-
-                bool contradiction = false;
-                while (propagationQueue.Count > 0 && !contradiction)
-                {
-                    var (currX, currY, currZ) = propagationQueue.Dequeue();
-
-                    totalPropagationSteps++;
-
-                    for (int dir = 0; dir < neighbours.Length; dir++)
+                    for (int directionIndex = 0; directionIndex < neighbours.Length; directionIndex++)
                     {
-                        int nx = currX + neighbours[dir].dx;
-                        int ny = currY + neighbours[dir].dy;
-                        int nz = currZ + neighbours[dir].dz;
+                        int nextX = currentX + neighbours[directionIndex].dx;
+                        int nextY = currentY + neighbours[directionIndex].dy;
+                        int nextZ = currentZ + neighbours[directionIndex].dz;
 
-                        if (nx < 0 || nx >= width || ny < 0 || ny >= depth || nz < 0 || nz >= height)
+                        if (nextX < 0 || nextX >= width ||
+                            nextY < 0 || nextY >= depth ||
+                            nextZ < 0 || nextZ >= height)
                         {
                             continue;
                         }
 
-                        HashSet<int> allowedForNeighbour = new HashSet<int>();
-                        foreach (int moduleHere in possible[currX, currY, currZ])
+                        HashSet<int> neighbourStates = possibleModuleStates[nextX, nextY, nextZ];
+                        if (neighbourStates.Count == 0)
                         {
-                            List<int> compatibleList = compatibility[moduleHere, dir];
-                            for (int compatIdx = 0; compatIdx < compatibleList.Count; compatIdx++)
-                            {
-                                allowedForNeighbour.Add(compatibleList[compatIdx]);
-                            }
+                            contradictionFound = true;
+                            break;
                         }
 
-                        int beforeCount = possible[nx, ny, nz].Count;
-                        List<int> toRemove = new List<int>();
-                        foreach (int candidate in possible[nx, ny, nz])
+                        MarkAllowedModules(possibleModuleStates[currentX, currentY, currentZ], compatibilityByModuleAndDirection, directionIndex);
+
+                        _modulesToRemove.Clear();
+                        foreach (int candidate in neighbourStates)
                         {
-                            if (!allowedForNeighbour.Contains(candidate))
-                            {
-                                toRemove.Add(candidate);
-                            }
+                            if (_allowedModuleMarks[candidate] != _allowedModuleToken)
+                                _modulesToRemove.Add(candidate);
                         }
 
-                        for (int r = 0; r < toRemove.Count; r++)
+                        int beforeCount = neighbourStates.Count;
+
+                        for (int removeIndex = 0; removeIndex < _modulesToRemove.Count; removeIndex++)
                         {
-                            possible[nx, ny, nz].Remove(toRemove[r]);
+                            neighbourStates.Remove(_modulesToRemove[removeIndex]);
                         }
 
-                        int afterCount = possible[nx, ny, nz].Count;
+                        int afterCount = neighbourStates.Count;
+
                         if (afterCount == 0)
                         {
-                            contradiction = true;
+                            contradictionFound = true;
                             break;
                         }
 
                         if (afterCount < beforeCount)
                         {
-                            propagationQueue.Enqueue((nx, ny, nz));
+                            if (beforeCount > 1 && afterCount == 1)
+                                collapsedCellCount++;
+
+                            cellPriorityQueue.Add(new CellPriorityEntry
+                            {
+                                x = nextX,
+                                y = nextY,
+                                z = nextZ,
+                                count = afterCount,
+                                order = queueOrder++
+                            });
+
+                            propagationQueue.Enqueue((nextX, nextY, nextZ));
                         }
                     }
                 }
 
-                if (contradiction)
+                if (contradictionFound)
                 {
+                    _generatedGrid = null;
+                    _generationSuccessful = false;
+                    _propagationStepCount = propagationSteps;
+                    states = possibleModuleStates;
                     return false;
-                }
-
-                collapsedCount = 0;
-                for (int x = 0; x < width; x++)
-                {
-                    for (int y = 0; y < depth; y++)
-                    {
-                        for (int z = 0; z < height; z++)
-                            if (possible[x, y, z].Count == 1)
-                            {
-                                collapsedCount++;
-                            }
-                    }
                 }
             }
 
@@ -363,25 +369,131 @@ namespace WFC
                 for (int y = 0; y < depth; y++)
                 {
                     for (int z = 0; z < height; z++)
-                        result[x, y, z] = FirstOf(possible[x, y, z]);
+                    {
+                        result[x, y, z] = possibleModuleStates[x, y, z].Count > 0
+                            ? FirstOf(possibleModuleStates[x, y, z])
+                            : 0;
+                    }
                 }
             }
 
-            LogWFCMetrics(attempts, totalPropagationSteps, possible);
+            _generatedGrid = result;
+            _generationSuccessful = true;
+            _propagationStepCount = propagationSteps;
+            states = possibleModuleStates;
             return true;
         }
 
-        private int FirstOf(HashSet<int> s)
+        private List<int>[][] BuildCompatibilityTable(int moduleCount)
         {
-            foreach (int v in s)
+            List<int>[][] compatibilityByModuleAndDirection = new List<int>[moduleCount][];
+
+            for (int moduleIndex = 0; moduleIndex < moduleCount; moduleIndex++)
             {
-                return v;
+                compatibilityByModuleAndDirection[moduleIndex] = new List<int>[6];
+                for (int directionIndex = 0; directionIndex < 6; directionIndex++)
+                {
+                    compatibilityByModuleAndDirection[moduleIndex][directionIndex] = new List<int>();
+                }
+            }
+
+            for (int moduleIndexA = 0; moduleIndexA < moduleCount; moduleIndexA++)
+            {
+                for (int moduleIndexB = 0; moduleIndexB < moduleCount; moduleIndexB++)
+                {
+                    if (modules[moduleIndexA] == null || modules[moduleIndexB] == null)
+                        continue;
+
+                    if (modules[moduleIndexA].GetPort(0) == modules[moduleIndexB].GetPort(1))
+                        compatibilityByModuleAndDirection[moduleIndexA][0].Add(moduleIndexB);
+
+                    if (modules[moduleIndexA].GetPort(1) == modules[moduleIndexB].GetPort(0))
+                        compatibilityByModuleAndDirection[moduleIndexA][1].Add(moduleIndexB);
+
+                    if (modules[moduleIndexA].GetPort(2) == modules[moduleIndexB].GetPort(3))
+                        compatibilityByModuleAndDirection[moduleIndexA][2].Add(moduleIndexB);
+
+                    if (modules[moduleIndexA].GetPort(3) == modules[moduleIndexB].GetPort(2))
+                        compatibilityByModuleAndDirection[moduleIndexA][3].Add(moduleIndexB);
+
+                    if (modules[moduleIndexA].GetPort(4) == modules[moduleIndexB].GetPort(5))
+                        compatibilityByModuleAndDirection[moduleIndexA][4].Add(moduleIndexB);
+
+                    if (modules[moduleIndexA].GetPort(5) == modules[moduleIndexB].GetPort(4))
+                        compatibilityByModuleAndDirection[moduleIndexA][5].Add(moduleIndexB);
+                }
+            }
+
+            return compatibilityByModuleAndDirection;
+        }
+
+        private void MarkAllowedModules(
+            HashSet<int> sourceCellStates,
+            List<int>[][] compatibilityByModuleAndDirection,
+            int directionIndex)
+        {
+            _allowedModuleToken++;
+            if (_allowedModuleToken == int.MaxValue)
+            {
+                Array.Clear(_allowedModuleMarks, 0, _allowedModuleMarks.Length);
+                _allowedModuleToken = 1;
+            }
+
+            foreach (int sourceModuleIndex in sourceCellStates)
+            {
+                foreach (int compatibleModuleIndex in compatibilityByModuleAndDirection[sourceModuleIndex][directionIndex])
+                {
+                    _allowedModuleMarks[compatibleModuleIndex] = _allowedModuleToken;
+                }
+            }
+        }
+
+        private bool TryPopNextCell(
+            SortedSet<CellPriorityEntry> cellPriorityQueue,
+            HashSet<int>[,,] possibleModuleStates,
+            out CellPriorityEntry selectedCell)
+        {
+            while (cellPriorityQueue.Count > 0)
+            {
+                selectedCell = cellPriorityQueue.Min;
+                cellPriorityQueue.Remove(selectedCell);
+
+                int currentCount = possibleModuleStates[selectedCell.x, selectedCell.y, selectedCell.z].Count;
+                if (currentCount > 1 && currentCount == selectedCell.count)
+                    return true;
+            }
+
+            selectedCell = default;
+            return false;
+        }
+
+        private int PickRandomFromSet(HashSet<int> stateSet)
+        {
+            int targetIndex = Random.Range(0, stateSet.Count);
+            int currentIndex = 0;
+
+            foreach (int value in stateSet)
+            {
+                if (currentIndex == targetIndex)
+                    return value;
+
+                currentIndex++;
             }
 
             return 0;
         }
 
-        private void InstantiateResult(int[,,] result)
+        private int FirstOf(HashSet<int> stateSet)
+        {
+            foreach (int value in stateSet)
+            {
+                return value;
+            }
+
+            return 0;
+        }
+
+        private void InstantiateResult(int[,,] resultGrid)
         {
             Transform old = transform.Find("WFC3D_Generated");
             if (old != null)
@@ -399,13 +511,13 @@ namespace WFC
 
             if (parentForPrefabs != null)
             {
-                for (int i = parentForPrefabs.childCount - 1; i >= 0; i--)
+                for (int childIndex = parentForPrefabs.childCount - 1; childIndex >= 0; childIndex--)
                 {
-                    Transform ch = parentForPrefabs.GetChild(i);
+                    Transform child = parentForPrefabs.GetChild(childIndex);
                     if (Application.isPlaying)
-                        Destroy(ch.gameObject);
+                        Destroy(child.gameObject);
                     else
-                        DestroyImmediate(ch.gameObject);
+                        DestroyImmediate(child.gameObject);
                 }
             }
 
@@ -415,16 +527,14 @@ namespace WFC
                 {
                     for (int z = 0; z < height; z++)
                     {
-                        int idx = result[x, y, z];
-                        if (idx < 0 || idx >= modules.Length || modules[idx] == null || modules[idx].prefab == null)
-                        {
+                        int moduleIndex = resultGrid[x, y, z];
+                        if (moduleIndex < 0 || moduleIndex >= modules.Length || modules[moduleIndex] == null || modules[moduleIndex].prefab == null)
                             continue;
-                        }
 
-                        Vector3 pos = GridToWorld(x, y, z);
-                        Quaternion rot = Quaternion.identity;
-                        GameObject go = Instantiate(modules[idx].prefab, pos, rot, targetParent);
-                        go.transform.localScale = Vector3.one * cellSize;
+                        Vector3 position = GridToWorld(x, y, z);
+                        Quaternion rotation = Quaternion.identity;
+                        GameObject spawnedObject = Instantiate(modules[moduleIndex].prefab, position, rotation, targetParent);
+                        spawnedObject.transform.localScale = Vector3.one * cellSize;
                     }
                 }
             }
@@ -432,20 +542,26 @@ namespace WFC
 
         private Vector3 GridToWorld(int gx, int gy, int gz)
         {
-            float ox = -width * cellSize * 0.5f + cellSize * 0.5f;
-            float oy = -depth * cellSize * 0.5f + cellSize * 0.5f;
-            float oz = -height * cellSize * 0.5f + cellSize * 0.5f;
-            Vector3 local = new Vector3(ox + gx * cellSize, oy + gy * cellSize, oz + gz * cellSize);
-            return transform.TransformPoint(local);
+            float offsetX = -width * cellSize * 0.5f + cellSize * 0.5f;
+            float offsetY = -depth * cellSize * 0.5f + cellSize * 0.5f;
+            float offsetZ = -height * cellSize * 0.5f + cellSize * 0.5f;
+
+            Vector3 localPosition = new Vector3(
+                offsetX + gx * cellSize,
+                offsetY + gy * cellSize,
+                offsetZ + gz * cellSize
+            );
+
+            return transform.TransformPoint(localPosition);
         }
 
         private void ClearPrefabs()
         {
             if (parentForPrefabs != null)
             {
-                for (int i = parentForPrefabs.childCount - 1; i >= 0; i--)
+                for (int childIndex = parentForPrefabs.childCount - 1; childIndex >= 0; childIndex--)
                 {
-                    Transform child = parentForPrefabs.GetChild(i);
+                    Transform child = parentForPrefabs.GetChild(childIndex);
                     if (Application.isPlaying)
                         Destroy(child.gameObject);
                     else

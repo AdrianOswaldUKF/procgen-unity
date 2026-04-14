@@ -1,14 +1,17 @@
+// Pn kód inšpirácia z 
+// Unity Dokumentácia: https://docs.unity3d.com/ScriptReference/Mathf.PerlinNoise.html
+
 using UnityEngine;
 
 namespace PerlinNoise
 {
     public class PnRoom : PnGenerator
     {
-        [Header("Room Size")] 
+        [Header("Room Size")]
         public float cellSize = 4f;
         public float wallHeight = 2.5f;
 
-        [Header("Prefabs")] 
+        [Header("Prefabs")]
         public GameObject floorPrefab;
         public GameObject wallPrefab;
 

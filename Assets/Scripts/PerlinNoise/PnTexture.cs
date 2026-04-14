@@ -1,3 +1,7 @@
+// Pn kód inšpirácia od Brackeys
+// https://www.youtube.com/watch?v=bG0uEXV6aHQ
+// Unity Dokumentácia: https://docs.unity3d.com/ScriptReference/Mathf.PerlinNoise.html
+
 using UnityEngine;
 
 namespace PerlinNoise

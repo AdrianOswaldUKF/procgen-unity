@@ -1,3 +1,7 @@
+// CA kód inšpirácia od Sebastian Lague  
+// https://github.com/SebLague/Procedural-Cave-Generation
+// https://www.youtube.com/playlist?list=PLFt_AvWsXl0eZgMK_DT5_biRkWXftAOf9 
+
 using UnityEngine;
 
 namespace CellularAutomata
@@ -52,8 +56,12 @@ namespace CellularAutomata
             Random.InitState(waterSeed.GetHashCode());
 
             for (int x = 0; x < width; x++)
+            {
                 for (int y = 0; y < height; y++)
+                {
                     waterGrid[x, y] = Random.value < DefaultFillProbability;
+                }
+            }
 
             for (int i = 0; i < DefaultIterations; i++)
             {

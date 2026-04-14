@@ -1,3 +1,6 @@
+// Pn kód inšpirácia z 
+// Unity Dokumentácia: https://docs.unity3d.com/ScriptReference/Mathf.PerlinNoise.html
+
 using UnityEngine;
 
 namespace PerlinNoise

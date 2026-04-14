@@ -1,3 +1,7 @@
+// CA kód inšpirácia od Sebastian Lague  
+// https://github.com/SebLague/Procedural-Cave-Generation
+// https://www.youtube.com/playlist?list=PLFt_AvWsXl0eZgMK_DT5_biRkWXftAOf9 
+
 using UnityEngine;
 
 namespace CellularAutomata
