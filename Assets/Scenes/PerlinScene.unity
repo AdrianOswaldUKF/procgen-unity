@@ -7082,7 +7082,7 @@ MonoBehaviour:
     - m_Text: Komnata
       m_Image: {fileID: 0}
       m_Color: {r: 1, g: 1, b: 1, a: 1}
-    - m_Text: Izba
+    - m_Text: "Miestnos\u0165"
       m_Image: {fileID: 0}
       m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_OnValueChanged:
