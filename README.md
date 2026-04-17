@@ -9,6 +9,13 @@ Kľúčové slová: Procedurálne generovanie, algoritmy, Unity, Perlinov šum, 
 
 ---
 
+Spustenie aplikácie (Release)
+
+Projekt obsahuje pripravenú release verziu aplikácie pre Windows, ktorá je dostupná v sekcii Releases:
+https://github.com/AdrianOswaldUKF/procgen-unity/releases/tag/release
+
+---
+
 ## Obsah
 
 - [Implementácia algoritmov](#implementácia-algoritmov)
